@@ -1,0 +1,7 @@
+secretData.h
+.vs
+*.filters
+__vm
+*.vcxproj
+Debug
+*.editorconfig
