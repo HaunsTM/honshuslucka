@@ -1,5 +1,4 @@
 #include <Arduino.h>
-
 #include "TextMessageGenerator.h"
 
 #include <Vector.h>
@@ -8,12 +7,13 @@
 #include <PubSubClient.h>
 #include "Actuator.h"
 #include "Blinker.h"
-#include "MqttAction.h"
+#include "ActuatorAction.h"
 #include "OnboardLED.h"
 #include "Switch.h"
 #include "Pins.h"
 #include "SecretData.h"
 #include "WifiManager.h"
+#include "HTTPWebServer.h"
 
 #include "TextMessageGenerator.h"
 #include "MQTTCommunicator.h"
@@ -32,14 +32,17 @@ TextMessageGenerator tMG(
     SECRET_DATA_MQTT_TOPIC_SUBSCRIBE, SECRET_DATA_MQTT_TOPIC_PUBLISH);
 
 int nextBlinkStepToPerform = 0;
-MqttAction m;
+ActuatorAction m;
 
 WiFiClient wifiClient;
 PubSubClient pubSubClient(wifiClient);
+ESP8266WebServer eSP8266WebServer(SECRET_DATA_WEB_SERVER_PORT);
 
 WifiManager wifiManager(
     tMG,
     CREDENTIALS_JSON_STRING);
+
+HTTPWebServer webserver(eSP8266WebServer, tMG);
 
 MQTTCommunicator mQTTC(
     pubSubClient, m, tMG,
@@ -48,7 +51,6 @@ MQTTCommunicator mQTTC(
     SECRET_DATA_MQTT_TOPIC_SUBSCRIBE);
 
 void setup() {
-  
     Serial.begin(115200); // initialize serial monitor with 9600 baud
 
     onboardLED.initialize();
@@ -60,10 +62,11 @@ void setup() {
     actuatorPushButton.initialize();
 
     wifiManager.initialize();
+    webserver.initialize();
     mQTTC.initialize();
 
     nextBlinkStepToPerform = 0;
-    m = MqttAction::turnOff;
+    m = ActuatorAction::turnOff;
     actuator.turnOFF();
 }
 
@@ -78,8 +81,8 @@ bool anyButtonIsPressed() {
 }
 
 void loop() {
-
     wifiManager.monitorWiFi();
+    webserver.handleClient();
 
     if (wifiManager.isConnectedToWifi()) {
         if (!mQTTC.isConnectedToMQTTBroker()) {
@@ -90,7 +93,7 @@ void loop() {
 
     while (anyButtonIsPressed())
     {
-        m = MqttAction::turnOff;
+        m = ActuatorAction::turnOff;
         blinker.setSequencePerformingAction();
         while (actuatorPullButton.isPressed())
         {
@@ -126,13 +129,13 @@ void loop() {
     if (!anyButtonIsPressed())
     {
         switch (m) {
-            case MqttAction::pull:
+            case ActuatorAction::pull:
                 actuator.pull();
                 break;
-            case MqttAction::turnOff:
+            case ActuatorAction::turnOff:
                 actuator.turnOFF();
                 break;
-            case MqttAction::push:
+            case ActuatorAction::push:
                 actuator.push();
                 break;
         }

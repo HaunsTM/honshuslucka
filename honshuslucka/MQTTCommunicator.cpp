@@ -5,7 +5,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-MQTTCommunicator::MQTTCommunicator(PubSubClient& pubSubClient, MqttAction& m, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe)
+MQTTCommunicator::MQTTCommunicator(PubSubClient& pubSubClient, ActuatorAction& m, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe)
     :   
         _pubSubClient(pubSubClient),
         _m(m),
@@ -49,16 +49,16 @@ void MQTTCommunicator::initialize() {
             Serial.println("mqtt received");
             switch ((char)payload[0]) {
                 case '0':
-                    _m = MqttAction::pull;
+                    _m = ActuatorAction::pull;
                     break;
                 case '1':
-                    _m = MqttAction::turnOff;
+                    _m = ActuatorAction::turnOff;
                     break;
                 case '2':
-                    _m = MqttAction::push;
+                    _m = ActuatorAction::push;
                     break;
                 default:
-                    _m = MqttAction::turnOff;
+                    _m = ActuatorAction::turnOff;
                     break;
             } 
         };
@@ -74,16 +74,16 @@ void MQTTCommunicator::mqttReceived(char* topic, byte* payload, unsigned int len
 
     switch ((char)payload[0]) {
     case '0':
-        _m = MqttAction::pull;
+        _m = ActuatorAction::pull;
         break;
     case '1':
-        _m = MqttAction::turnOff;
+        _m = ActuatorAction::turnOff;
         break;
     case '2':
-        _m = MqttAction::push;
+        _m = ActuatorAction::push;
         break;
     default:
-        _m = MqttAction::turnOff;
+        _m = ActuatorAction::turnOff;
         break;
     }
 }

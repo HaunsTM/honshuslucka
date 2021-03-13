@@ -34,6 +34,8 @@ class TextMessageGenerator
 
 		String hatchWereManuallyPositioned(String direction);
 		String hatchArrivedToItsDestination(String position);
+
+
 };
 
 #endif

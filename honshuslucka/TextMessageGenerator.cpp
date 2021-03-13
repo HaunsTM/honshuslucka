@@ -15,6 +15,7 @@ TextMessageGenerator::TextMessageGenerator(String mqttBrokerURL, int mqttPort, S
 
 void TextMessageGenerator::initialize() {
 };
+
 String TextMessageGenerator::lookingForWifiConnection() {
 	const String message =
         String("Looking for wifi...\n") +

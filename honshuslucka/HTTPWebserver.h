@@ -1,26 +1,39 @@
+#include <Arduino.h>
 #include <string>
+#include <ESP8266WebServer.h>
 
 #include "TextMessageGenerator.h"
 
-#ifndef HTTP_WEBSERVER_H
-#define HTTP_WEBSERVER_H
+#ifndef HTTP_WEB_SERVER_H
+#define HTTP_WEB_SERVER_H
 
-class HTTPWebserver {
+class HTTPWebServer {
 
 private:
-    int _webserverportPort;
+    int _webserverPort;
 
     bool _initialized;
-
+    ESP8266WebServer& _server;
     TextMessageGenerator& _tMG;
+
+
+    String htmlEnveloper(String title, String bodyContent);
+
+    String javascriptCallAPIFromButton();
+
+    void setUpRouteHandlers();
+
+    void routeGetInfo();
+    void routeGetNotFound();
 public:
-    HTTPWebserver(TextMessageGenerator& tMG);
+    HTTPWebServer(ESP8266WebServer& server, TextMessageGenerator& tMG);
     
-    ~HTTPWebserver();
+    ~HTTPWebServer();
 
     void initialize();
 
     bool isConnectedToWifi();
+    void handleClient();
 
 };
 

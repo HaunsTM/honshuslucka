@@ -1,6 +1,6 @@
 #include <string>
 
-#include "MqttAction.h"
+#include "ActuatorAction.h"
 #include "TextMessageGenerator.h"
 #include <PubSubClient.h>
 
@@ -19,11 +19,11 @@ private:
 
     bool _initialized;
 
-    MqttAction& _m;
+    ActuatorAction& _m;
     PubSubClient& _pubSubClient;
     TextMessageGenerator& _tMG;
 public:
-    MQTTCommunicator(PubSubClient& pubSubClient, MqttAction& m, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe);
+    MQTTCommunicator(PubSubClient& pubSubClient, ActuatorAction& m, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe);
     
     ~MQTTCommunicator();
 
