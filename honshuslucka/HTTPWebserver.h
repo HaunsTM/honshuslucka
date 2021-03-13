@@ -25,6 +25,10 @@ private:
 
     void routeGetInfo();
     void routeGetNotFound();
+
+    void routeActuatorPush();
+    void routeGetActuatorTurnOff();
+    void routeActuatorPull();
 public:
     HTTPWebServer(ESP8266WebServer& server, TextMessageGenerator& tMG);
     

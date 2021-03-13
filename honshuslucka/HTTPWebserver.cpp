@@ -36,8 +36,10 @@ void HTTPWebServer::initialize() {
 void HTTPWebServer::setUpRouteHandlers() {
 
     _server.on("/", [this]() { routeGetInfo(); });
-    _server.on("/help", [this]() { routeGetInfo(); });
-    _server.on("/info", [this]() { routeGetInfo(); });
+
+    _server.on("/actuatorPush", [this]() { routeActuatorPush(); });
+    _server.on("/actuatorTurnOff", [this]() { routeGetActuatorTurnOff(); });
+    _server.on("/actuatorPull", [this]() { routeActuatorPull(); });
 
     _server.onNotFound([this]() { routeGetNotFound(); });
 }
@@ -62,7 +64,7 @@ String HTTPWebServer::htmlEnveloper(String title, String bodyContent) {
                 String("<h1 class=\"title\">") + title + String("</h1>") +
                 bodyContent +
                 String("<div class=\"info\">") +
-                    String("<p>This software is distributed under <a href = \"https://en.wikipedia.org/wiki/MIT_License\">MIT License</a>.Source code could be found on <a href=\"https://github.com/HaunsTM\">Github - HaunsTM</a></p>") +
+                    String("<p>This software is distributed under <a href = \"https://en.wikipedia.org/wiki/MIT_License\">MIT License</a>. Source code on <a href=\"https://github.com/HaunsTM\">Github - HaunsTM</a></p>") +
                 String("</div>") +
             String("</body>") +
         String("</html>");
@@ -105,18 +107,18 @@ void HTTPWebServer::routeGetInfo() {
 	        String("</thead>") +
 	        String("<tbody>") +
 		        String("<tr>") +                    
-			        String("<td>") + String("<button id='btnPush' type='button' onclick='callAPIFromButton(\"//") + localIP + String("\", \"btnPush\")'>Push</button>") + String("</td>") +
-			        String("<td><a href=\"#\">//") + localIP + String("/push</a></td>") +
+			        String("<td>") + String("<button id='btnActuatorPush' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorPush\", \"btnActuatorPush\")'>Push</button>") + String("</td>") +
+			        String("<td><a href=\"#\">//") + localIP + String("/actuatorPush</a></td>") +
 			        String("<td>Skjuter ut st&auml;lldonets pistong.</td>") +
 		        String("</tr>") +
 		        String("<tr>") +                            
-			        String("<td>") + String("<button id='btnTurnOff' type='button' onclick='callAPIFromButton(\"//") + localIP + String("\", \"btnTurnOff\")'>Turn off</button>") + String("</td>") +
-			        String("<td><a href=\"#\">//") + localIP + String("/turnOff</a></td>") +
+			        String("<td>") + String("<button id='btnActuatorTurnOff' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorTurnOff\", \"btnActuatorTurnOff\")'>Turn off</button>") + String("</td>") +
+			        String("<td><a href=\"#\">//") + localIP + String("/actuatorTurnOff</a></td>") +
 			        String("<td>St&auml;nger av st&auml;lldonets motor.</td>") +
 		        String("</tr>") +
 		        String("<tr>") +                            
-			        String("<td>") + String("<button id='btnPull' type='button' onclick='callAPIFromButton(\"//") + localIP + String("\", \"btnPull\")'>Pull</button>") + String("</td>") +
-			        String("<td><a href=\"#\">//") + localIP + String("/pull</a></td>") +
+			        String("<td>") + String("<button id='btnActuatorPull' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorPull\", \"btnActuatorPull\")'>Pull</button>") + String("</td>") +
+			        String("<td><a href=\"#\">//") + localIP + String("/actuatorPull</a></td>") +
 			        String("<td>Drar in st&auml;lldonets pistong.</td>") +
 		        String("</tr>") +
 	        String("</tbody>") +
@@ -125,6 +127,16 @@ void HTTPWebServer::routeGetInfo() {
     const String htmlBodyAndJavascript = htmlBodyContent + javascriptCallAPIFromButton();
     String html = htmlEnveloper("H&ouml;nshuslucka", htmlBodyAndJavascript);
     _server.send(200, "text/html", html);
+}
+
+void HTTPWebServer::routeActuatorPush() {
+    _server.send(200, "text/plain", "Skjuter ut...");
+}
+void HTTPWebServer::routeGetActuatorTurnOff() {
+    _server.send(404, "text/plain", "Avstängd");
+}
+void HTTPWebServer::routeActuatorPull() {
+    _server.send(200, "text/plain", "Drar in...");
 }
 
 void HTTPWebServer::routeGetNotFound() {
