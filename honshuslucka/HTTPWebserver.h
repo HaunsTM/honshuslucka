@@ -26,6 +26,9 @@ private:
     void routeGetInfo();
     void routeGetNotFound();
 
+    void routeActuatorOpenHatch();
+    void routeGetActuatorCloseHatch();
+
     void routeActuatorPush();
     void routeGetActuatorTurnOff();
     void routeActuatorPull();

@@ -37,6 +37,9 @@ void HTTPWebServer::setUpRouteHandlers() {
 
     _server.on("/", [this]() { routeGetInfo(); });
 
+    _server.on("/actuatorOpenHatch", [this]() { routeActuatorOpenHatch(); });
+    _server.on("/actuatorCloseHatch", [this]() { routeGetActuatorCloseHatch(); });
+
     _server.on("/actuatorPush", [this]() { routeActuatorPush(); });
     _server.on("/actuatorTurnOff", [this]() { routeGetActuatorTurnOff(); });
     _server.on("/actuatorPull", [this]() { routeActuatorPull(); });
@@ -54,10 +57,11 @@ String HTTPWebServer::htmlEnveloper(String title, String bodyContent) {
                 String("<meta http-equiv=\"content-type\" content=\"text/html;charset=UTF-8\">") +
                 String("<style>") +
                     String("body {font-family: Arial, sans-serif; color: Black; padding: 1rem;}") +
-                    String("table {font-family: 'Courier New', monospace;}") +
+                    String("table {font-family: 'Courier New', monospace; padding: 1rem 0;}") +
                     String("table th {font-weight: bold; background-color: LightGrey}") +
                     String(".title {border-top: 1px solid Black;}") +
-                    String(".info {text-align: right; border-top: 1px solid DarkGray;color: Gray; font-style: italic; font-size: small;}") +
+                    String(".response-result {text-align: right; background-color: LightGrey; font-family: 'Courier New', monospace; padding: 0 1rem;}") +
+                    String(".info {text-align: right; border-top: 1px solid DarkGray; color: Gray; font-style: italic; font-size: small;}") +
                 String("</style>") +
             String("</head>") +
             String("<body>") +
@@ -74,7 +78,7 @@ String HTTPWebServer::htmlEnveloper(String title, String bodyContent) {
 String HTTPWebServer::javascriptCallAPIFromButton() {
     const String javascript =
         String("<script>") +
-            String("const callAPIFromButton = async (url, buttonId) => {") +
+            String("const callAPIFromButton = async (url, buttonId, responseTextOutputId) => {") +
                 String("const response = await fetch(`${url}`);") +
                 String("const button = document.getElementById(buttonId);") +
                 String("if (response.status == 200) {") +
@@ -84,6 +88,12 @@ String HTTPWebServer::javascriptCallAPIFromButton() {
                     String("button.style = 'background-color: Tomato;';") +
                     String("console.error(`error calling api [${url}]: ${response.status}`);") +
                 String("}") +
+                String("if (responseTextOutputId && response) {") +
+                    String("const responseTextOutput = document.getElementById(responseTextOutputId);") +
+                    String("const responseText = await response.text();") +
+                    String("responseTextOutput.innerHTML = `Latest request response: <i>${responseText}</i>`;") +
+                String("}") +
+
             String("}") +
         String("</script>");
     return javascript;
@@ -93,50 +103,83 @@ void HTTPWebServer::routeGetInfo() {
     const String localIP = WiFi.localIP().toString();
     const String htmlBodyContent =
         String("<p>") +
-	        String("Denna mjukvara &auml;r avsett f&ouml;r Arduino och kompatibla PLCer. Syftet &auml;r att medelst PLCn m&ouml;jligg&ouml;ra styrning av ett linj&auml;rt st&auml;lldon (12 volt DC motor) &ouml;ver wifi/via tryckknappar, ") +
-	        String(" d&auml;r slutm&aring;let &auml;r hissa upp/ner en lucka av giljotintyp f&ouml;r att &ouml;ppna/st&auml;nga ing&aring;ngen till ett h&ouml;nshus.") +
+	        String("This software is intended for Arduino and compatible PLCs. The purpose is to use the PLC to enable control of a linear actuator (12 volt DC motor) via wifi / via pushbuttons, where the ultimate goal is to hoist up / down a guillotine - type door to open / close the entrance to a chicken house.") +
         String("</p>") +
-        String("<h2>Tillg&auml;nliga http-anrop:</h2>") +
+        String("<h2>Controls</h2>") +
+        String("<h3>Processes</h3>") +
         String("<table>") +
 	        String("<thead>") +
 		        String("<tr>") +
-			        String("<th></th>") +
-			        String("<th>Anrop</th>") +
-			        String("<th>F&ouml;rklaring</th>") +
+			        String("<th>Request</th>") +
+			        String("<th colspan=2></th>") +
 		        String("</tr>") +
 	        String("</thead>") +
 	        String("<tbody>") +
-		        String("<tr>") +                    
-			        String("<td>") + String("<button id='btnActuatorPush' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorPush\", \"btnActuatorPush\")'>Push</button>") + String("</td>") +
+		        String("<tr>") +
+			        String("<td><a href=\"#\">//") + localIP + String("/actuatorCloseHatch</a></td>") +
+                    String("<td>") + String("<button id='btnActuatorCloseHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorCloseHatch\", \"btnActuatorCloseHatch\", \"tdActuatorProcessResult\")'>Close hatch</button>") + String("</td>") +
+			        String("<td>Close hatch</td>") +
+		        String("</tr>") +        
+		        String("<tr>") +
+			        String("<td><a href=\"#\">//") + localIP + String("/actuatorOpenHatch</a></td>") +
+                    String("<td>") + String("<button id='btnActuatorOpenHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorOpenHatch\", \"btnActuatorOpenHatch\", \"tdActuatorProcessResult\")'>Open hatch</button>") + String("</td>") +
+			        String("<td>Open hatch</td>") +
+		        String("</tr>") +
+		        String("<tr>") +
+			        String("<td id=\"tdActuatorProcessResult\" class=\"response-result\" colspan=3></td>") +
+		        String("</tr>") +
+	        String("</tbody>") +
+        String("</table>") +
+        String("<h3>Movements</h3>") +
+        String("<table>") +
+	        String("<thead>") +
+		        String("<tr>") +
+			        String("<th>Request</th>") +
+			        String("<th colspan=2></th>") +
+		        String("</tr>") +
+	        String("</thead>") +
+	        String("<tbody>") +
+		        String("<tr>") +
 			        String("<td><a href=\"#\">//") + localIP + String("/actuatorPush</a></td>") +
-			        String("<td>Skjuter ut st&auml;lldonets pistong.</td>") +
+                    String("<td>") + String("<button id='btnActuatorPush' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorPush\", \"btnActuatorPush\", \"tdActuatorMovementResult\")'>Push</button>") + String("</td>") +
+			        String("<td>Extends the actuator piston...</td>") +
 		        String("</tr>") +
-		        String("<tr>") +                            
-			        String("<td>") + String("<button id='btnActuatorTurnOff' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorTurnOff\", \"btnActuatorTurnOff\")'>Turn off</button>") + String("</td>") +
+		        String("<tr>") +
 			        String("<td><a href=\"#\">//") + localIP + String("/actuatorTurnOff</a></td>") +
-			        String("<td>St&auml;nger av st&auml;lldonets motor.</td>") +
+			        String("<td>") + String("<button id='btnActuatorTurnOff' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorTurnOff\", \"btnActuatorTurnOff\", \"tdActuatorMovementResult\")'>Turn off</button>") + String("</td>") +
+			        String("<td>Stop actuator engine</td>") +
 		        String("</tr>") +
-		        String("<tr>") +                            
-			        String("<td>") + String("<button id='btnActuatorPull' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorPull\", \"btnActuatorPull\")'>Pull</button>") + String("</td>") +
+		        String("<tr>") +
 			        String("<td><a href=\"#\">//") + localIP + String("/actuatorPull</a></td>") +
-			        String("<td>Drar in st&auml;lldonets pistong.</td>") +
+			        String("<td>") + String("<button id='btnActuatorPull' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorPull\", \"btnActuatorPull\", \"tdActuatorMovementResult\")'>Pull</button>") + String("</td>") +
+			        String("<td>Contracting the actuator piston...</td>") +
+		        String("</tr>") +
+		        String("<tr>") +
+			        String("<td id=\"tdActuatorMovementResult\" class=\"response-result\" colspan=3></td>") +
 		        String("</tr>") +
 	        String("</tbody>") +
         String("</table>");
 
     const String htmlBodyAndJavascript = htmlBodyContent + javascriptCallAPIFromButton();
-    String html = htmlEnveloper("H&ouml;nshuslucka", htmlBodyAndJavascript);
+    String html = htmlEnveloper("Chicken house hatch", htmlBodyAndJavascript);
     _server.send(200, "text/html", html);
 }
 
+void HTTPWebServer::routeActuatorOpenHatch() {
+    _server.send(200, "text/plain", "Opening hatch");
+}
+void HTTPWebServer::routeGetActuatorCloseHatch() {
+    _server.send(200, "text/plain", "Closing hatch");
+}
+
 void HTTPWebServer::routeActuatorPush() {
-    _server.send(200, "text/plain", "Skjuter ut...");
+    _server.send(200, "text/plain", "Extends actuator...");
 }
 void HTTPWebServer::routeGetActuatorTurnOff() {
-    _server.send(404, "text/plain", "Avstängd");
+    _server.send(404, "text/plain", "Turned off actuator");
 }
 void HTTPWebServer::routeActuatorPull() {
-    _server.send(200, "text/plain", "Drar in...");
+    _server.send(200, "text/plain", "Contracting actuator...");
 }
 
 void HTTPWebServer::routeGetNotFound() {
