@@ -30,7 +30,7 @@ private:
     void routeGetActuatorCloseHatch();
 
     void routeActuatorPush();
-    void routeGetActuatorTurnOff();
+    void routeActuatorTurnOff();
     void routeActuatorPull();
 public:
     HTTPWebServer(ESP8266WebServer& server, TextMessageGenerator& tMG);

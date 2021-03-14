@@ -41,7 +41,7 @@ void HTTPWebServer::setUpRouteHandlers() {
     _server.on("/actuatorCloseHatch", [this]() { routeGetActuatorCloseHatch(); });
 
     _server.on("/actuatorPush", [this]() { routeActuatorPush(); });
-    _server.on("/actuatorTurnOff", [this]() { routeGetActuatorTurnOff(); });
+    _server.on("/actuatorTurnOff", [this]() { routeActuatorTurnOff(); });
     _server.on("/actuatorPull", [this]() { routeActuatorPull(); });
 
     _server.onNotFound([this]() { routeGetNotFound(); });
@@ -117,7 +117,7 @@ void HTTPWebServer::routeGetInfo() {
 	        String("<tbody>") +
 		        String("<tr>") +
 			        String("<td><a href=\"#\">//") + localIP + String("/actuatorCloseHatch</a></td>") +
-                    String("<td>") + String("<button id='btnActuatorCloseHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorCloseHatch\", \"btnActuatorCloseHatch\", \"tdActuatorProcessResult\")'>Close hatch</button>") + String("</td>") +
+                    String("<td>") + String("<button id='btnActuatorCloseHatch' type='button' onmousedown='callAPIFromButton(\"//") + localIP + String("/actuatorCloseHatch\", \"btnActuatorCloseHatch\", \"tdActuatorProcessResult\")'>Close hatch</button>") + String("</td>") +
 			        String("<td>Close hatch</td>") +
 		        String("</tr>") +        
 		        String("<tr>") +
@@ -141,7 +141,7 @@ void HTTPWebServer::routeGetInfo() {
 	        String("<tbody>") +
 		        String("<tr>") +
 			        String("<td><a href=\"#\">//") + localIP + String("/actuatorPush</a></td>") +
-                    String("<td>") + String("<button id='btnActuatorPush' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorPush\", \"btnActuatorPush\", \"tdActuatorMovementResult\")'>Push</button>") + String("</td>") +
+                    String("<td>") + String("<button id='btnActuatorPush' type='button' onmousedown='callAPIFromButton(\"//") + localIP + String("/actuatorPush\", \"btnActuatorPush\", \"tdActuatorMovementResult\")' onmouseup='callAPIFromButton(\"//") + localIP + String("/actuatorTurnOff\", \"btnActuatorPush\", \"tdActuatorMovementResult\")' ontouchstart='callAPIFromButton(\"//") + localIP + String("/actuatorPush\", \"btnActuatorPush\", \"tdActuatorMovementResult\")' ontouchend='callAPIFromButton(\"//") + localIP + String("/actuatorTurnOff\", \"btnActuatorPush\", \"tdActuatorMovementResult\")'>Push</button>") + String("</td>") +
 			        String("<td>Extends the actuator piston...</td>") +
 		        String("</tr>") +
 		        String("<tr>") +
@@ -151,7 +151,7 @@ void HTTPWebServer::routeGetInfo() {
 		        String("</tr>") +
 		        String("<tr>") +
 			        String("<td><a href=\"#\">//") + localIP + String("/actuatorPull</a></td>") +
-			        String("<td>") + String("<button id='btnActuatorPull' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorPull\", \"btnActuatorPull\", \"tdActuatorMovementResult\")'>Pull</button>") + String("</td>") +
+			        String("<td>") + String("<button id='btnActuatorPull' type='button' onmousedown='callAPIFromButton(\"//") + localIP + String("/actuatorPull\", \"btnActuatorPull\", \"tdActuatorMovementResult\")' onmouseup='callAPIFromButton(\"//") + localIP + String("/actuatorTurnOff\", \"btnActuatorPull\", \"tdActuatorMovementResult\")' ontouchstart='callAPIFromButton(\"//") + localIP + String("/actuatorPull\", \"btnActuatorPull\", \"tdActuatorMovementResult\")' ontouchend='callAPIFromButton(\"//") + localIP + String("/actuatorTurnOff\", \"btnActuatorPull\", \"tdActuatorMovementResult\")'>Pull</button>") + String("</td>") +
 			        String("<td>Contracting the actuator piston...</td>") +
 		        String("</tr>") +
 		        String("<tr>") +
@@ -175,7 +175,7 @@ void HTTPWebServer::routeGetActuatorCloseHatch() {
 void HTTPWebServer::routeActuatorPush() {
     _server.send(200, "text/plain", "Extends actuator...");
 }
-void HTTPWebServer::routeGetActuatorTurnOff() {
+void HTTPWebServer::routeActuatorTurnOff() {
     _server.send(404, "text/plain", "Turned off actuator");
 }
 void HTTPWebServer::routeActuatorPull() {
