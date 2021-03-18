@@ -20,6 +20,7 @@ private:
     String htmlEnveloper(String title, String bodyContent);
 
     String javascriptCallAPIFromButton();
+    String javascriptAddActuatorControlButtonEventListeners();
 
     void setUpRouteHandlers();
 
