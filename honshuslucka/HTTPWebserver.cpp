@@ -57,15 +57,16 @@ String HTTPWebServer::htmlEnveloper(String title, String bodyContent) {
                 String("<meta http-equiv=\"content-type\" content=\"text/html;charset=UTF-8\">") +
                 String("<style>") +
                     String("body {font-family: Arial, sans-serif; color: Black; padding: 1rem;}") +
-                    String("button {height: 3rem; font-size: 1.5rem; font-weight: bold;}") +
+                    String("button {height: 3rem; font-size: 1rem; font-weight: bold;}") +
                     String("table {font-family: 'Courier New', monospace; padding: 1rem 0;}") +
-                    String("table th {font-weight: bold; background-color: LightGrey}") +
+                    String("table thead tr:first-child th {font-weight: bold; background-color: LightGrey;}") +
+                    String("table thead tr:last-child th {border-bottom: 1px solid LightGrey;}") +
                     String(".button-symbol {width: 3rem;}") +
                     String(".button-success {background-color: LightGreen;}") +
                     String(".button-error {background-color: Tomato;}") +
                     String(".info {text-align: right; border-top: 1px solid DarkGray; color: Gray; font-style: italic; font-size: small;}") +
                     String(".title {border-top: 1px solid Black;}") +
-                    String(".response-result {text-align: right; background-color: LightGrey; font-family: 'Courier New', monospace; padding: 0 1rem;}") +
+                    String(".response-result { font-size: 0.8rem; font-family: 'Courier New', monospace; padding: 0 1rem;}") +
                 String("</style>") +
             String("</head>") +
             String("<body>") +
@@ -108,7 +109,7 @@ String HTTPWebServer::javascriptCallAPIFromButton() {
 
             String("const callAPIFromButton = async (url, buttonId, responseTextOutputId, timeoutResponseStatusColorOnButton) => {") +
 
-                String("const addPause = Timer(1000);") +
+                String("const addPause = Timer(5*1000);") +
                 String("const button = document.getElementById(buttonId);") +
 
                 String("try {") +
@@ -118,7 +119,7 @@ String HTTPWebServer::javascriptCallAPIFromButton() {
                     String("if (responseTextOutputId && response) {") +
                         String("const responseTextOutput = document.getElementById(responseTextOutputId);") +
                         String("const responseText = await response.text();") +
-                        String("responseTextOutput.innerHTML = `Latest request response: <i>${responseText}</i>`;") +
+                        String("responseTextOutput.innerHTML = `<i>${responseText}</i>`;") +
                     String("}") +
 
                     String("if (response.status == 200) {") +
@@ -192,7 +193,7 @@ String HTTPWebServer::javascriptAddActuatorControlButtonEventListeners() {
             String("grpPressButtons.forEach( (pressButton, index, array) => {") +
 	            String("setUpEventHandler(pressButton);") +
             String("});") +
-  /*      */
+
         String("</script>");
     return javascript;
 }
@@ -203,28 +204,44 @@ void HTTPWebServer::routeGetInfo() {
         String("<p>") +
 	        String("This software is intended for Arduino and compatible PLCs. The purpose is to use the PLC to enable control of a linear actuator (12 volt DC motor) via wifi / via pushbuttons, where the ultimate goal is to hoist up / down a guillotine - type door to open / close the entrance to a chicken house.") +
         String("</p>") +
+
         String("<h2>Controls</h2>") +
         String("<h3>Processes</h3>") +
         String("<table>") +
 	        String("<thead>") +
 		        String("<tr>") +
-			        String("<th>Request</th>") +
-			        String("<th colspan=2></th>") +
+			        String("<th colspan=2>Process</th>") +
+		        String("</tr>") +
+		        String("<tr>") +
+			        String("<th id=\"tdActuatorProcessResult\" class=\"response-result\" colspan=2>-</th>") +
 		        String("</tr>") +
 	        String("</thead>") +
 	        String("<tbody>") +
 		        String("<tr>") +
-			        String("<td id=\"tdActuatorProcessResult\" class=\"response-result\" colspan=3></td>") +
-		        String("</tr>") +
-		        String("<tr>") +
-			        String("<td><a href=\"#\">//") + localIP + String("/actuatorCloseHatch</a></td>") +
                     String("<td>") + String("<button id='btnActuatorCloseHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorCloseHatch\", \"btnActuatorCloseHatch\", \"tdActuatorProcessResult\", true)'>Close hatch</button>") + String("</td>") +
-			        String("<td>Close hatch</td>") +
+                    String("<td>") +
+                        String("<table>") +
+                            String("<tr>") +
+                                String("<td>Close hatch</td>") +
+                            String("</tr>") +
+                            String("<tr>") +
+                                String("<td><a href=\"#\">//") + localIP + String("/actuatorCloseHatch</a></td>") +
+                            String("</tr>") +
+                        String("</table>") +
+                    String("<td>") +                    
 		        String("</tr>") +
 		        String("<tr>") +
-			        String("<td><a href=\"#\">//") + localIP + String("/actuatorOpenHatch</a></td>") +
                     String("<td>") + String("<button id='btnActuatorOpenHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorOpenHatch\", \"btnActuatorOpenHatch\", \"tdActuatorProcessResult\", true)'>Open hatch</button>") + String("</td>") +
-			        String("<td>Open hatch</td>") +
+                    String("<td>") +
+                        String("<table>") +
+                            String("<tr>") +
+                                String("<td>Open hatch</td>") +
+                            String("</tr>") +
+                            String("<tr>") +
+                                String("<td><a href=\"#\">//") + localIP + String("/actuatorOpenHatch</a></td>") +
+                            String("</tr>") +
+                        String("</table>") +
+                    String("<td>") +
 		        String("</tr>") +
 	        String("</tbody>") +
         String("</table>") +
@@ -232,28 +249,51 @@ void HTTPWebServer::routeGetInfo() {
         String("<table>") +
 	        String("<thead>") +
 		        String("<tr>") +
-			        String("<th>Request</th>") +
-			        String("<th colspan=2></th>") +
+			        String("<th colspan=2>Movement</th>") +
+		        String("</tr>") +
+		        String("<tr>") +
+			        String("<th id=\"tdActuatorMovementResult\" class=\"response-result\" colspan=2>-</th>") +
 		        String("</tr>") +
 	        String("</thead>") +
 	        String("<tbody>") +
 		        String("<tr>") +
-			        String("<td id=\"tdActuatorMovementResult\" class=\"response-result\" colspan=3></td>") +
+                    String("<td><button id=\"btnPull\" type=\"button\" class=\"button-symbol\">&#x25B2;</button></td>") +
+                    String("<td>") +
+                        String("<table>") +
+                            String("<tr>") +
+                                String("<td>Contracting actuator piston</td>") +
+                            String("</tr>") +
+                            String("<tr>") +
+                                String("<td><a href=\"#\">//") + localIP + String("/actuatorPull</a></td>") +
+                            String("</tr>") +
+                        String("</table>") +
+                    String("<td>") +
 		        String("</tr>") +
 		        String("<tr>") +
-			        String("<td><a href=\"#\">//") + localIP + String("/actuatorPull</a></td>") +
-                    String("<td><button id=\"btnPull\" type=\"button\" class=\"button-symbol\">&#x23F6;</button></td>") +
-                    String("<td>Contracting the actuator piston...</td>") +
+                    String("<td><button id=\"btnTurnOff\" type=\"button\" class=\"button-symbol\">&#x25CF;</button></td>") +
+                    String("<td>") +
+                        String("<table>") +
+                            String("<tr>") +
+                                String("<td>Stop actuator engine</td>") +
+                            String("</tr>") +
+                            String("<tr>") +
+                                String("<td><a href=\"#\">//") + localIP + String("/actuatorTurnOff</a></td>") +
+                            String("</tr>") +
+                        String("</table>") +
+                    String("<td>") +                    
 		        String("</tr>") +
 		        String("<tr>") +
-			        String("<td><a href=\"#\">//") + localIP + String("/actuatorTurnOff</a></td>") +
-                    String("<td><button id=\"btnTurnOff\" type=\"button\" class=\"button-symbol\">&#x23F9;</button></td>") +
-                    String("<td>Stop actuator engine</td>") +
-		        String("</tr>") +
-		        String("<tr>") +
-			        String("<td><a href=\"#\">//") + localIP + String("/actuatorPush</a></td>") +
-                    String("<td><button id=\"btnPush\" type=\"button\" class=\"button-symbol\">&#x23F7;</button></td>") +
-			        String("<td>Extends the actuator piston...</td>") +
+                    String("<td><button id=\"btnPush\" type=\"button\" class=\"button-symbol\">&#x25BC;</button></td>") +
+                    String("<td>") +
+                        String("<table>") +
+                            String("<tr>") +
+                                String("<td>Extends actuator piston</td>") +
+                            String("</tr>") +
+                            String("<tr>") +
+                                String("<td><a href=\"#\">//") + localIP + String("/actuatorPush</a></td>") +
+                            String("</tr>") +
+                        String("</table>") +
+                    String("<td>") +
 		        String("</tr>") +
 	        String("</tbody>") +
         String("</table>");
