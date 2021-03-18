@@ -57,9 +57,12 @@ String HTTPWebServer::htmlEnveloper(String title, String bodyContent) {
                 String("<meta http-equiv=\"content-type\" content=\"text/html;charset=UTF-8\">") +
                 String("<style>") +
                     String("body {font-family: Arial, sans-serif; color: Black; padding: 1rem;}") +
+                    String("button {height: 3rem; font-size: 1.5rem; font-weight: bold;}") +
                     String("table {font-family: 'Courier New', monospace; padding: 1rem 0;}") +
                     String("table th {font-weight: bold; background-color: LightGrey}") +
-                    String(".button-symbol {height: 3rem; width: 3rem; font-size: 1.5rem; font-weight: bold;") +
+                    String(".button-symbol {width: 3rem;}") +
+                    String(".button-success {background-color: LightGreen;}") +
+                    String(".button-error {background-color: Tomato;}") +
                     String(".info {text-align: right; border-top: 1px solid DarkGray; color: Gray; font-style: italic; font-size: small;}") +
                     String(".title {border-top: 1px solid Black;}") +
                     String(".response-result {text-align: right; background-color: LightGrey; font-family: 'Courier New', monospace; padding: 0 1rem;}") +
@@ -79,21 +82,69 @@ String HTTPWebServer::htmlEnveloper(String title, String bodyContent) {
 String HTTPWebServer::javascriptCallAPIFromButton() {
     const String javascript =
         String("<script>") +
+        
+            String("const Timer = (ms) => {") +
 
-            String("const callAPIFromButton = async (url, buttonId, responseTextOutputId) => {") +
-                String("const response = await fetch(`${url}`);") +
+	            String("let id;") +
+	
+	            String("const start = () => new Promise(resolve => {") +
+		            String("if (id === -1) {") +
+			            String("throw new Error('Timer already aborted');") +
+		            String("}") +
+		            String("id = setTimeout(resolve, ms);") +
+	            String("});") +
+	
+	            String("const abort = () => {") +
+		            String("if (id !== -1 || id === undefined) {") +
+			            String("clearTimeout(id);") +
+			            String("id = -1;") +
+		            String("}") +
+	            String("};") +
+	
+	            String("return {") +
+		            String("start, abort") +
+	            String("}") +
+            String("};") +
+
+            String("const callAPIFromButton = async (url, buttonId, responseTextOutputId, timeoutResponseStatusColorOnButton) => {") +
+
+                String("const addPause = Timer(1000);") +
                 String("const button = document.getElementById(buttonId);") +
-                String("if (response.status == 200) {") +
-                    String("button.style = 'background-color: LightGreen;';") +
-                String("}") +
-                String("else {") +
-                    String("button.style = 'background-color: Tomato;';") +
-                    String("console.error(`error calling api [${url}]: ${response.status}`);") +
-                String("}") +
-                String("if (responseTextOutputId && response) {") +
-                    String("const responseTextOutput = document.getElementById(responseTextOutputId);") +
-                    String("const responseText = await response.text();") +
-                    String("responseTextOutput.innerHTML = `Latest request response: <i>${responseText}</i>`;") +
+
+                String("try {") +
+
+                    String("const response = await fetch(`${url}`);") +
+        
+                    String("if (responseTextOutputId && response) {") +
+                        String("const responseTextOutput = document.getElementById(responseTextOutputId);") +
+                        String("const responseText = await response.text();") +
+                        String("responseTextOutput.innerHTML = `Latest request response: <i>${responseText}</i>`;") +
+                    String("}") +
+
+                    String("if (response.status == 200) {") +
+                        String("button.classList.remove(\"button-error\");") +
+                        String("button.classList.add(\"button-success\");") +
+
+                        String("if (timeoutResponseStatusColorOnButton) {") +
+                            String("await addPause.start();") +
+                            String("button.classList.remove(\"button-success\");") +
+                        String("}") +
+
+                    String("} else {") +
+                        String("button.classList.remove(\"button-success\");") +
+                        String("button.classList.add(\"button-error\");") +
+
+                        String("console.error(`error calling api [${url}]: ${response.status}`);") +
+                        String("if (timeoutResponseStatusColorOnButton) {") +
+                            String("await addPause.start();") +
+                            String("button.classList.remove(\"button-error\");") +
+                        String("}") +
+                    String("}") +
+
+                String("} catch (e) {") +
+                    String("button.classList.remove(\"button-success\");") +
+                    String("console.error(`error calling api [${url}]: ${e}`);") +
+                    String("button.classList.add(\"button-error\");") +
                 String("}") +
 
             String("};") +
@@ -127,13 +178,13 @@ String HTTPWebServer::javascriptAddActuatorControlButtonEventListeners() {
             String("};") +
 
             String("const handleStart = (e) => {") +
-                String("callAPIFromButton(e.currentTarget.urlStart, e.currentTarget.id, \"tdActuatorMovementResult\");") +
+                String("callAPIFromButton(e.currentTarget.urlStart, e.currentTarget.id, \"tdActuatorMovementResult\", false);") +
 	            String("e.stopPropagation();") +
 	            String("e.preventDefault();") +
             String("};") +
 
             String("const handleEnd = (e) => {") +
-	            String("callAPIFromButton(e.currentTarget.urlEnd, e.currentTarget.id, \"tdActuatorMovementResult\");") +
+	            String("callAPIFromButton(e.currentTarget.urlEnd, e.currentTarget.id, \"tdActuatorMovementResult\", true);") +
 	            String("e.stopPropagation();") +
 	            String("e.preventDefault();") +
             String("};") +
@@ -145,7 +196,6 @@ String HTTPWebServer::javascriptAddActuatorControlButtonEventListeners() {
         String("</script>");
     return javascript;
 }
-
 
 void HTTPWebServer::routeGetInfo() {
     const String localIP = WiFi.localIP().toString();
@@ -164,17 +214,17 @@ void HTTPWebServer::routeGetInfo() {
 	        String("</thead>") +
 	        String("<tbody>") +
 		        String("<tr>") +
-			        String("<td><a href=\"#\">//") + localIP + String("/actuatorCloseHatch</a></td>") +
-                    String("<td>") + String("<button id='btnActuatorCloseHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorCloseHatch\", \"btnActuatorCloseHatch\", \"tdActuatorProcessResult\")'>Close hatch</button>") + String("</td>") +
-			        String("<td>Close hatch</td>") +
-		        String("</tr>") +        
-		        String("<tr>") +
-			        String("<td><a href=\"#\">//") + localIP + String("/actuatorOpenHatch</a></td>") +
-                    String("<td>") + String("<button id='btnActuatorOpenHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorOpenHatch\", \"btnActuatorOpenHatch\", \"tdActuatorProcessResult\")'>Open hatch</button>") + String("</td>") +
-			        String("<td>Open hatch</td>") +
+			        String("<td id=\"tdActuatorProcessResult\" class=\"response-result\" colspan=3></td>") +
 		        String("</tr>") +
 		        String("<tr>") +
-			        String("<td id=\"tdActuatorProcessResult\" class=\"response-result\" colspan=3></td>") +
+			        String("<td><a href=\"#\">//") + localIP + String("/actuatorCloseHatch</a></td>") +
+                    String("<td>") + String("<button id='btnActuatorCloseHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorCloseHatch\", \"btnActuatorCloseHatch\", \"tdActuatorProcessResult\", true)'>Close hatch</button>") + String("</td>") +
+			        String("<td>Close hatch</td>") +
+		        String("</tr>") +
+		        String("<tr>") +
+			        String("<td><a href=\"#\">//") + localIP + String("/actuatorOpenHatch</a></td>") +
+                    String("<td>") + String("<button id='btnActuatorOpenHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorOpenHatch\", \"btnActuatorOpenHatch\", \"tdActuatorProcessResult\", true)'>Open hatch</button>") + String("</td>") +
+			        String("<td>Open hatch</td>") +
 		        String("</tr>") +
 	        String("</tbody>") +
         String("</table>") +
@@ -187,6 +237,9 @@ void HTTPWebServer::routeGetInfo() {
 		        String("</tr>") +
 	        String("</thead>") +
 	        String("<tbody>") +
+		        String("<tr>") +
+			        String("<td id=\"tdActuatorMovementResult\" class=\"response-result\" colspan=3></td>") +
+		        String("</tr>") +
 		        String("<tr>") +
 			        String("<td><a href=\"#\">//") + localIP + String("/actuatorPull</a></td>") +
                     String("<td><button id=\"btnPull\" type=\"button\" class=\"button-symbol\">&#x23F6;</button></td>") +
@@ -201,9 +254,6 @@ void HTTPWebServer::routeGetInfo() {
 			        String("<td><a href=\"#\">//") + localIP + String("/actuatorPush</a></td>") +
                     String("<td><button id=\"btnPush\" type=\"button\" class=\"button-symbol\">&#x23F7;</button></td>") +
 			        String("<td>Extends the actuator piston...</td>") +
-		        String("</tr>") +
-		        String("<tr>") +
-			        String("<td id=\"tdActuatorMovementResult\" class=\"response-result\" colspan=3></td>") +
 		        String("</tr>") +
 	        String("</tbody>") +
         String("</table>");
