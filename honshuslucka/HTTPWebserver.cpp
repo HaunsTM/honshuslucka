@@ -58,9 +58,10 @@ String HTTPWebServer::htmlEnveloper(String title, String bodyContent) {
                 String("<style>") +
                     String("body {font-family: Arial, sans-serif; color: Black; padding: 1rem;}") +
                     String("button {height: 3rem; font-size: 1rem; font-weight: bold;}") +
-                    String("table {font-family: 'Courier New', monospace; padding: 1rem 0;}") +
+                    String("table {width: 70vw; font-family: 'Courier New', monospace; padding: 1rem 0;}") +
                     String("table thead tr:first-child th {font-weight: bold; background-color: LightGrey;}") +
                     String("table thead tr:last-child th {border-bottom: 1px solid LightGrey;}") +
+                    String("td a {font-size: 0.7rem;}") +
                     String(".button-symbol {width: 3rem;}") +
                     String(".button-success {background-color: LightGreen;}") +
                     String(".button-error {background-color: Tomato;}") +
