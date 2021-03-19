@@ -24,6 +24,7 @@ private:
 
     void setUpRouteHandlers();
 
+    void routeGetControl();
     void routeGetInfo();
     void routeGetNotFound();
 

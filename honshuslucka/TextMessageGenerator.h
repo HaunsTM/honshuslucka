@@ -8,6 +8,9 @@ class TextMessageGenerator
 	private:
 		bool _initialized;
 
+		String _firmwareVersion;
+		int _serialMonitorBaud;
+
 		String _credentialsJSONString;
 		String _mqttBrokerURL;
 		int _mqttPort;
@@ -19,9 +22,24 @@ class TextMessageGenerator
 		const String HEADER_UNDERLINE = String("====================================\n");
 
 	public:
-		TextMessageGenerator(String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe, String mqttTopicPublish);
+		TextMessageGenerator(String firmwareVersion, int serialMonitorBaud, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe, String mqttTopicPublish);
 
 		void initialize();
+
+
+		String firmwareVersion();
+		String serialMonitorBaud();
+
+		String credentialsJSONString();
+		String mqttBrokerURL();
+		String mqttPort();
+		String mqttUsername();
+		String mqttPassword();
+		String mqttTopicSubscribe();
+		String mqttTopicPublish();
+
+
+		String deviceInfo();
 
 		String lookingForWifiConnection();
 		String wifiConnectionEstablished(String SSID, String assignedIP);

@@ -27,6 +27,7 @@ Switch actuatorPullButton(PIN_D2_GPIO4_SDA, true);
 Switch actuatorPushButton(PIN_D3_GPIO0_FLASH, true);
 
 TextMessageGenerator tMG(
+    SETTINGS_DATA_FIRMWARE_VERSION, SETTINGS_DATA_SERIAL_MONITOR_BAUD,
     SETTINGS_DATA_MQTT_BROKER_URL, SETTINGS_DATA_MQTT_PORT,
     SETTINGS_DATA_MQTT_USERNAME, SETTINGS_DATA_MQTT_PASSWORD,
     SETTINGS_DATA_MQTT_TOPIC_SUBSCRIBE, SETTINGS_DATA_MQTT_TOPIC_PUBLISH);
@@ -51,7 +52,7 @@ MQTTCommunicator mQTTC(
     SETTINGS_DATA_MQTT_TOPIC_SUBSCRIBE);
 
 void setup() {
-    Serial.begin(115200); // initialize serial monitor with 9600 baud
+    Serial.begin(SETTINGS_DATA_SERIAL_MONITOR_BAUD); // initialize serial monitor with 115200 baud
 
     onboardLED.initialize();
 

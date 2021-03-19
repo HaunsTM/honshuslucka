@@ -3,8 +3,10 @@
 #include <string>
 #include "TextMessageGenerator.h"
 
-TextMessageGenerator::TextMessageGenerator(String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe, String mqttTopicPublish) {
+TextMessageGenerator::TextMessageGenerator(String firmwareVersion, int serialMonitorBaud, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe, String mqttTopicPublish) {
 
+    _firmwareVersion = firmwareVersion;
+    _serialMonitorBaud = serialMonitorBaud;
     _mqttBrokerURL = mqttBrokerURL;
     _mqttPort = mqttPort;
     _mqttUsername = mqttUsername;
@@ -14,6 +16,15 @@ TextMessageGenerator::TextMessageGenerator(String mqttBrokerURL, int mqttPort, S
 };
 
 void TextMessageGenerator::initialize() {
+};
+
+String TextMessageGenerator::deviceInfo() {
+    const String message =
+        String("Chicken hatch PLC\n") +
+        HEADER_UNDERLINE +
+        String("Firmware version ") + _firmwareVersion + String("\n") +
+        String("\n\n\n");
+    return message;
 };
 
 String TextMessageGenerator::lookingForWifiConnection() {
@@ -43,19 +54,19 @@ String TextMessageGenerator::wifiCredentialsJSONParsingError(String error) {
 
 
 String TextMessageGenerator::connectingToMQTTServer(String clientId) {
-    char mqttPort[6];
+    
     const String message =
         String("Connecting to MQTT server...\n") +
         HEADER_UNDERLINE +
         String("MQTT broker URL: ") + _mqttBrokerURL + String("\n") +
-        String("MQTT port: ") + itoa(_mqttPort, mqttPort, 10) + String("\n") +
+        String("MQTT port: ") + mqttPort() + String("\n") +
         String("Client Id: ") + clientId + String("\n") +
         String("Credentials to be used:\n") +
         String("Username: ") + _mqttUsername + String("\n") +
         String("Password: ") + _mqttPassword + String("\n")+
         String("Topics:\n") +
         String("Subscription: ") + _mqttTopicSubscribe + String("\n") +
-        String("Password: ") + _mqttTopicPublish + String("\n\n\n");
+        String("Publish: ") + _mqttTopicPublish + String("\n\n\n");
     return message;
 };
 
@@ -143,4 +154,48 @@ String TextMessageGenerator::hatchArrivedToItsDestination(String position) {
         HEADER_UNDERLINE +
         String("Position: ") + position + String("\n\n\n");
     return message;
+};
+
+
+
+
+String TextMessageGenerator::firmwareVersion() {
+    return _firmwareVersion;
+};
+
+String TextMessageGenerator::serialMonitorBaud() {
+    char serialMonitorBaud[6];
+    itoa(_serialMonitorBaud, serialMonitorBaud, 10);
+
+    return serialMonitorBaud;
+};
+
+String TextMessageGenerator::credentialsJSONString() {
+    return _credentialsJSONString;
+};
+
+String TextMessageGenerator::mqttBrokerURL() {
+    return _mqttBrokerURL;
+};
+
+String TextMessageGenerator::mqttPort() {
+    char mqttPort[6];
+    itoa(_mqttPort, mqttPort, 10);
+    return mqttPort;
+};
+
+String TextMessageGenerator::mqttUsername() {
+    return _mqttUsername;
+};
+
+String TextMessageGenerator::mqttPassword() {
+    return _mqttPassword;
+};
+
+String TextMessageGenerator::mqttTopicSubscribe() {
+    return _mqttTopicSubscribe;
+};
+
+String TextMessageGenerator::mqttTopicPublish() {
+    return _mqttTopicPublish;
 };
