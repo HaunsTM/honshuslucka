@@ -102,7 +102,7 @@ void MQTTCommunicator::connectToMQTTBroker() {
 
             Serial.print(_tMG.mQTTServerConnectionEstablished().c_str());
             // Once connected, publish an announcement...
-            //_pubSubClient.publish(SECRET_DATA_MQTT_TOPIC_PUBLISH.c_str(), "hello world");
+            //_pubSubClient.publish(SETTINGS_DATA_MQTT_TOPIC_PUBLISH.c_str(), "hello world");
 
             // ... and resubscribe
             _pubSubClient.subscribe(_mqttTopicSubscribe.c_str());

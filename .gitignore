@@ -5,3 +5,4 @@ __vm
 *.vcxproj
 Debug
 *.editorconfig
+/honshuslucka/SettingsData.h

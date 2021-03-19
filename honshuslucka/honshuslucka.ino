@@ -11,7 +11,7 @@
 #include "OnboardLED.h"
 #include "Switch.h"
 #include "Pins.h"
-#include "SecretData.h"
+#include "SettingsData.h"
 #include "WifiManager.h"
 #include "HTTPWebServer.h"
 
@@ -27,16 +27,16 @@ Switch actuatorPullButton(PIN_D2_GPIO4_SDA, true);
 Switch actuatorPushButton(PIN_D3_GPIO0_FLASH, true);
 
 TextMessageGenerator tMG(
-    SECRET_DATA_MQTT_BROKER_URL, SECRET_DATA_MQTT_PORT,
-    SECRET_DATA_MQTT_USERNAME, SECRET_DATA_MQTT_PASSWORD,
-    SECRET_DATA_MQTT_TOPIC_SUBSCRIBE, SECRET_DATA_MQTT_TOPIC_PUBLISH);
+    SETTINGS_DATA_MQTT_BROKER_URL, SETTINGS_DATA_MQTT_PORT,
+    SETTINGS_DATA_MQTT_USERNAME, SETTINGS_DATA_MQTT_PASSWORD,
+    SETTINGS_DATA_MQTT_TOPIC_SUBSCRIBE, SETTINGS_DATA_MQTT_TOPIC_PUBLISH);
 
 int nextBlinkStepToPerform = 0;
 ActuatorAction m;
 
 WiFiClient wifiClient;
 PubSubClient pubSubClient(wifiClient);
-ESP8266WebServer eSP8266WebServer(SECRET_DATA_WEB_SERVER_PORT);
+ESP8266WebServer eSP8266WebServer(SETTINGS_DATA_WEB_SERVER_PORT);
 
 WifiManager wifiManager(
     tMG,
@@ -46,9 +46,9 @@ HTTPWebServer webserver(eSP8266WebServer, tMG);
 
 MQTTCommunicator mQTTC(
     pubSubClient, m, tMG,
-    SECRET_DATA_MQTT_BROKER_URL, SECRET_DATA_MQTT_PORT,
-    SECRET_DATA_MQTT_USERNAME, SECRET_DATA_MQTT_PASSWORD,
-    SECRET_DATA_MQTT_TOPIC_SUBSCRIBE);
+    SETTINGS_DATA_MQTT_BROKER_URL, SETTINGS_DATA_MQTT_PORT,
+    SETTINGS_DATA_MQTT_USERNAME, SETTINGS_DATA_MQTT_PASSWORD,
+    SETTINGS_DATA_MQTT_TOPIC_SUBSCRIBE);
 
 void setup() {
     Serial.begin(115200); // initialize serial monitor with 9600 baud
