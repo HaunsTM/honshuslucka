@@ -10,8 +10,10 @@
 #include "ActuatorAction.h"
 #include "OnboardLED.h"
 #include "Switch.h"
+#include "SwitchesManager.h"
 #include "Pins.h"
 #include "SettingsData.h"
+#include "ActionRequest.h"
 #include "WifiManager.h"
 #include "HTTPWebServer.h"
 
@@ -20,9 +22,10 @@
 
 
 OnboardLED onboardLED;
+Blinker blinker(onboardLED);
 
 Actuator actuator(PIN_D6_GPIO12_MISO, PIN_D7_GPIO13_MOSI);
-Blinker blinker(onboardLED);
+
 Switch actuatorPullButton(PIN_D2_GPIO4_SDA, true);
 Switch actuatorPushButton(PIN_D3_GPIO0_FLASH, true);
 
@@ -35,9 +38,19 @@ TextMessageGenerator tMG(
 int nextBlinkStepToPerform = 0;
 ActuatorAction m;
 
+ActionRequest actionRequests[3] = { ActionRequest("switch button requested"), ActionRequest("http requested"), ActionRequest("mqtt requested") };
+
 WiFiClient wifiClient;
 PubSubClient pubSubClient(wifiClient);
 ESP8266WebServer eSP8266WebServer(SETTINGS_DATA_WEB_SERVER_PORT);
+
+void initiateRequestArray() {
+    actionRequests[0].initialize();
+    actionRequests[1].initialize();
+    actionRequests[2].initialize();
+}
+
+SwitchesManager switchesManager(actionRequests[0], actuatorPullButton, actuatorPushButton);
 
 WifiManager wifiManager(
     tMG,
@@ -62,28 +75,42 @@ void setup() {
     actuatorPullButton.initialize();
     actuatorPushButton.initialize();
 
+    switchesManager.initialize();
+
     wifiManager.initialize();
     webserver.initialize();
     mQTTC.initialize();
 
+    /*
     nextBlinkStepToPerform = 0;
     m = ActuatorAction::turnOff;
     actuator.turnOFF();
+    */
 }
 
-bool isMoving() {
-    bool isMoving = false;
-    return isMoving;
-}
-
+/*
 bool anyButtonIsPressed() {
     bool anyIsPressed = actuatorPullButton.isPressed() || actuatorPushButton.isPressed();
     return anyIsPressed;
 }
+*/
+
+void performAction() {
+
+    if (actionRequests[0].getAction() == ActuatorAction::TURN_OFF && !actionRequests[0].getAcknowledged()) {
+
+        Serial.println("#");
+        actionRequests[0].setAcknowledged(true);
+    }
+}
 
 void loop() {
+    switchesManager.monitorInteractions();
     wifiManager.monitorWiFi();
     webserver.handleClient();
+
+    performAction();
+   
 
     if (wifiManager.isConnectedToWifi()) {
         if (!mQTTC.isConnectedToMQTTBroker()) {
@@ -91,7 +118,7 @@ void loop() {
         }
         pubSubClient.loop();
     }
-
+ /*
     while (anyButtonIsPressed())
     {
         m = ActuatorAction::turnOff;
@@ -150,4 +177,6 @@ void loop() {
     }
 
     delay(10);
+
+    */
 }

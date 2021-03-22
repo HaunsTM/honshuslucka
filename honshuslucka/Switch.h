@@ -15,6 +15,8 @@ public:
     void initialize();
 
     bool isPressed();
+    int getPinSwitch();
+    bool getNormallyOpen();
 };
 
 #endif

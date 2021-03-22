@@ -3,9 +3,12 @@
 
 enum ActuatorAction
 {
-    pull = 0,
-    turnOff = 1,
-    push = 2
+    PULL = 0,
+    TURN_OFF = 1,
+    PUSH = 2,
+
+    CLOSE_HATCH = 3,
+    OPEN_HATCH = 4
 };
 
 #endif

@@ -49,16 +49,16 @@ void MQTTCommunicator::initialize() {
             Serial.println("mqtt received");
             switch ((char)payload[0]) {
                 case '0':
-                    _m = ActuatorAction::pull;
+                    _m = ActuatorAction::PULL;
                     break;
                 case '1':
-                    _m = ActuatorAction::turnOff;
+                    _m = ActuatorAction::TURN_OFF;
                     break;
                 case '2':
-                    _m = ActuatorAction::push;
+                    _m = ActuatorAction::PUSH;
                     break;
                 default:
-                    _m = ActuatorAction::turnOff;
+                    _m = ActuatorAction::TURN_OFF;
                     break;
             } 
         };
@@ -74,16 +74,16 @@ void MQTTCommunicator::mqttReceived(char* topic, byte* payload, unsigned int len
 
     switch ((char)payload[0]) {
     case '0':
-        _m = ActuatorAction::pull;
+        _m = ActuatorAction::PULL;
         break;
     case '1':
-        _m = ActuatorAction::turnOff;
+        _m = ActuatorAction::TURN_OFF;
         break;
     case '2':
-        _m = ActuatorAction::push;
+        _m = ActuatorAction::PUSH;
         break;
     default:
-        _m = ActuatorAction::turnOff;
+        _m = ActuatorAction::TURN_OFF;
         break;
     }
 }

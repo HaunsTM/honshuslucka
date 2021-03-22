@@ -21,3 +21,11 @@ bool Switch::isPressed() {
     }
     return digitalRead(_pinSwitch) == HIGH;
 }
+
+int Switch::getPinSwitch() {
+    return _pinSwitch;
+};
+
+bool Switch::getNormallyOpen() {
+    return _normallyOpen;
+};

@@ -58,7 +58,7 @@ void WifiManager::initialize() {
 }
 
 void WifiManager::monitorWiFi() {
-
+    // maintains wifi connection
     if (_wifiMulti.run() != WL_CONNECTED)
     {
         if (_connectioWasAlive == true)
