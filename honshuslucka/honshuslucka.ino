@@ -97,9 +97,21 @@ bool anyButtonIsPressed() {
 
 void performAction() {
 
-    if (actionRequests[0].getAction() == ActuatorAction::TURN_OFF && !actionRequests[0].getAcknowledged()) {
+    if (actionRequests[0].getAction() == ActuatorAction::PULL && !actionRequests[0].getAcknowledged()) {
+        digitalWrite(LED_BUILTIN, LOW);
+        actuator.pull();
+        Serial.print("1 - ");
+        actionRequests[0].setAcknowledged(true);
+    } else if (actionRequests[0].getAction() == ActuatorAction::TURN_OFF && !actionRequests[0].getAcknowledged()) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        actuator.turnOFF();
+        Serial.print("2 - ");
+        actionRequests[0].setAcknowledged(true);
+    } else if (actionRequests[0].getAction() == ActuatorAction::PUSH && !actionRequests[0].getAcknowledged()) {
+        digitalWrite(LED_BUILTIN, LOW);
 
-        Serial.println("#");
+        actuator.push();
+        Serial.print("3 - ");
         actionRequests[0].setAcknowledged(true);
     }
 }
