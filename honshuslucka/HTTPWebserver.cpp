@@ -5,8 +5,9 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-HTTPWebServer::HTTPWebServer(ESP8266WebServer& server, TextMessageGenerator& tMG)
-    :   _server(server),
+HTTPWebServer::HTTPWebServer(ActionRequest& actionRequest, ESP8266WebServer& server, TextMessageGenerator& tMG)
+    :   _actionRequest(actionRequest),
+        _server(server),
         _tMG(tMG)
 {
     _initialized = false;
@@ -25,7 +26,10 @@ void HTTPWebServer::initialize() {
     if (!_initialized) {
         // https://techtutorialsx.com/2017/04/09/esp8266-connecting-to-mqtt-broker/
 
-       
+
+        _actionRequest.setAction(ActuatorAction::TURN_OFF);
+        _actionRequest.setAcknowledged(true);
+
         setUpRouteHandlers();
         _server.begin();
 
@@ -389,12 +393,18 @@ void HTTPWebServer::routeGetActuatorCloseHatch() {
 }
 
 void HTTPWebServer::routeActuatorPush() {
+    _actionRequest.setAction(ActuatorAction::PUSH);
+    _actionRequest.setAcknowledged(false);
     _server.send(200, "text/plain", "Extends actuator...");
 }
 void HTTPWebServer::routeActuatorTurnOff() {
+    _actionRequest.setAction(ActuatorAction::TURN_OFF);
+    _actionRequest.setAcknowledged(false);
     _server.send(200, "text/plain", "Turned off actuator");
 }
 void HTTPWebServer::routeActuatorPull() {
+    _actionRequest.setAction(ActuatorAction::PULL);
+    _actionRequest.setAcknowledged(false);
     _server.send(200, "text/plain", "Contracting actuator...");
 }
 

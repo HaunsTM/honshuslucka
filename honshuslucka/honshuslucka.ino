@@ -56,7 +56,7 @@ WifiManager wifiManager(
     tMG,
     CREDENTIALS_JSON_STRING);
 
-HTTPWebServer webserver(eSP8266WebServer, tMG);
+HTTPWebServer webserver(actionRequests[1], eSP8266WebServer, tMG);
 
 MQTTCommunicator mQTTC(
     pubSubClient, m, tMG,
@@ -113,7 +113,23 @@ void performAction() {
         actuator.push();
         Serial.print("3 - ");
         actionRequests[0].setAcknowledged(true);
-    }
+    } else if (actionRequests[1].getAction() == ActuatorAction::PULL && !actionRequests[1].getAcknowledged()) {
+        digitalWrite(LED_BUILTIN, LOW);
+        actuator.pull();
+        Serial.print("4 - ");
+        actionRequests[1].setAcknowledged(true);
+    } else if (actionRequests[1].getAction() == ActuatorAction::TURN_OFF && !actionRequests[1].getAcknowledged()) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        actuator.turnOFF();
+        Serial.print("5 - ");
+        actionRequests[1].setAcknowledged(true);
+    } else if (actionRequests[1].getAction() == ActuatorAction::PUSH && !actionRequests[1].getAcknowledged()) {
+        digitalWrite(LED_BUILTIN, LOW);
+
+        actuator.push();
+        Serial.print("6 - ");
+        actionRequests[1].setAcknowledged(true);
+    };
 }
 
 void loop() {

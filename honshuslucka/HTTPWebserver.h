@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <string>
 #include <ESP8266WebServer.h>
+#include "ActionRequest.h"
 
 #include "TextMessageGenerator.h"
 
@@ -13,6 +14,7 @@ private:
     int _webserverPort;
 
     bool _initialized;
+    ActionRequest& _actionRequest;
     ESP8266WebServer& _server;
     TextMessageGenerator& _tMG;
 
@@ -35,7 +37,7 @@ private:
     void routeActuatorTurnOff();
     void routeActuatorPull();
 public:
-    HTTPWebServer(ESP8266WebServer& server, TextMessageGenerator& tMG);
+    HTTPWebServer(ActionRequest& actionRequest, ESP8266WebServer& server, TextMessageGenerator& tMG);
     
     ~HTTPWebServer();
 
