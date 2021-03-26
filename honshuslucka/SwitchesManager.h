@@ -1,4 +1,4 @@
-#include "ActionRequest.h"
+#include "HatchRequest.h"
 #include "Switch.h"
 
 #ifndef SWITCHES_MANAGER_H
@@ -7,7 +7,7 @@
 class SwitchesManager {
 
 private:
-    ActionRequest& _actionRequest;
+    HatchRequest& _hatchRequest;
     Switch& _actuatorPullButton;
     Switch& _actuatorPushButton;
 
@@ -16,14 +16,14 @@ private:
     bool _pushShouldHaveAcknowledgedReset;
 
     unsigned long _lastAcknowledgementChangedMs;
-    const unsigned int MIN_TIME_DURATION_BETWEEN_LAST_ACKNOWLEDGED_TURN_OFF_AND_NEW_ACTION_MS = 500;
+    const unsigned int MIN_TIME_DURATION_BETWEEN_LAST_ACKNOWLEDGED_TURN_OFF_AND_NEW_ACTION_MS = 10;
 
     bool newButtonInteractionMayBePerformed();
 
     bool _initialized;
 
 public:
-    SwitchesManager(ActionRequest& actionRequest, Switch& actuatorPullButton, Switch& actuatorPushButton);
+    SwitchesManager(HatchRequest& hatchRequest, Switch& actuatorPullButton, Switch& actuatorPushButton);
 
     void initialize();
     void monitorInteractions();

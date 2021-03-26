@@ -1,10 +1,11 @@
 #include <Arduino.h>
-#include "ActionRequest.h"
+#include "HatchRequest.h"
+#include "HatchRequestAction.h"
 #include "Switch.h"
 #include "SwitchesManager.h"
 
-SwitchesManager::SwitchesManager(ActionRequest& actionRequest, Switch& actuatorPullButton, Switch& actuatorPushButton) :
-    _actionRequest(actionRequest),
+SwitchesManager::SwitchesManager(HatchRequest& hatchRequest, Switch& actuatorPullButton, Switch& actuatorPushButton) :
+    _hatchRequest(hatchRequest),
     _actuatorPullButton(actuatorPullButton),
     _actuatorPushButton(actuatorPushButton)
 {
@@ -20,8 +21,8 @@ void SwitchesManager::initialize() {
         _turnOffShouldHaveAcknowledgedReset = true;
         _pushShouldHaveAcknowledgedReset = true;
 
-        _actionRequest.setAction(ActuatorAction::TURN_OFF);
-        _actionRequest.setAcknowledged(true);
+        _hatchRequest.setAction(HatchRequestAction::STOP);
+        _hatchRequest.setAcknowledged(true);
         _initialized = true;
     }
 };
@@ -34,7 +35,7 @@ bool SwitchesManager::newButtonInteractionMayBePerformed() {
         return true;
     }
     const bool timeElapsedSinceLatestAction = currentTimeMs > (_lastAcknowledgementChangedMs + MIN_TIME_DURATION_BETWEEN_LAST_ACKNOWLEDGED_TURN_OFF_AND_NEW_ACTION_MS);
-    const bool latestActionWasTurnOff = _actionRequest.getAction() == ActuatorAction::TURN_OFF;
+    const bool latestActionWasTurnOff = _hatchRequest.getAction() == HatchRequestAction::STOP;
 
     const bool newButtonInteractionMayBePerformed = timeElapsedSinceLatestAction && latestActionWasTurnOff;
 
@@ -48,10 +49,10 @@ void SwitchesManager::monitorInteractions() {
 
     if (actuatorPullButtonIsPressed && newButtonInteractionMayBePerformed()) {
         
-        _actionRequest.setAction(ActuatorAction::PULL);
+        _hatchRequest.setAction(HatchRequestAction::UP);
 
         if (_pullShouldHaveAcknowledgedReset) {
-            _actionRequest.setAcknowledged(false);
+            _hatchRequest.setAcknowledged(false);
             _lastAcknowledgementChangedMs = millis();
 
             _pullShouldHaveAcknowledgedReset = false;
@@ -62,10 +63,10 @@ void SwitchesManager::monitorInteractions() {
 
     else if (!actuatorPullButtonIsPressed && !actuatorPushButtonIsPressed) {
         
-        _actionRequest.setAction(ActuatorAction::TURN_OFF);
+        _hatchRequest.setAction(HatchRequestAction::STOP);
 
         if (_turnOffShouldHaveAcknowledgedReset && newButtonInteractionMayBePerformed()) {
-            _actionRequest.setAcknowledged(false); 
+            _hatchRequest.setAcknowledged(false);
             _lastAcknowledgementChangedMs = millis();
 
             _pullShouldHaveAcknowledgedReset = true;
@@ -76,10 +77,10 @@ void SwitchesManager::monitorInteractions() {
 
     else if (actuatorPushButtonIsPressed && newButtonInteractionMayBePerformed()) {
 
-        _actionRequest.setAction(ActuatorAction::PUSH);
+        _hatchRequest.setAction(HatchRequestAction::DOWN);
 
         if (_pushShouldHaveAcknowledgedReset) {
-            _actionRequest.setAcknowledged(false);
+            _hatchRequest.setAcknowledged(false);
             _lastAcknowledgementChangedMs = millis();
 
             _pushShouldHaveAcknowledgedReset = false;

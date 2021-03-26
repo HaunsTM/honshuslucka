@@ -1,12 +1,13 @@
 #include <Arduino.h>
+#include "HatchRequestAction.h"
 #include "HTTPWebServer.h"
 #include "TextMessageGenerator.h"
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-HTTPWebServer::HTTPWebServer(ActionRequest& actionRequest, ESP8266WebServer& server, TextMessageGenerator& tMG)
-    :   _actionRequest(actionRequest),
+HTTPWebServer::HTTPWebServer(HatchRequest& hatchRequest, ESP8266WebServer& server, TextMessageGenerator& tMG)
+    :   _hatchRequest(hatchRequest),
         _server(server),
         _tMG(tMG)
 {
@@ -27,8 +28,8 @@ void HTTPWebServer::initialize() {
         // https://techtutorialsx.com/2017/04/09/esp8266-connecting-to-mqtt-broker/
 
 
-        _actionRequest.setAction(ActuatorAction::TURN_OFF);
-        _actionRequest.setAcknowledged(true);
+        _hatchRequest.setAction(HatchRequestAction::STOP);
+        _hatchRequest.setAcknowledged(true);
 
         setUpRouteHandlers();
         _server.begin();
@@ -42,12 +43,12 @@ void HTTPWebServer::setUpRouteHandlers() {
     _server.on("/", [this]() { routeGetControl(); });
     _server.on("/info", [this]() { routeGetInfo(); });
 
-    _server.on("/actuatorOpenHatch", [this]() { routeActuatorOpenHatch(); });
-    _server.on("/actuatorCloseHatch", [this]() { routeGetActuatorCloseHatch(); });
+    _server.on("/openHatch", [this]() { routeGetOpenHatch(); });
+    _server.on("/closeHatch", [this]() { routeGetCloseHatch(); });
 
-    _server.on("/actuatorPush", [this]() { routeActuatorPush(); });
-    _server.on("/actuatorTurnOff", [this]() { routeActuatorTurnOff(); });
-    _server.on("/actuatorPull", [this]() { routeActuatorPull(); });
+    _server.on("/pushActuator", [this]() { routeGetPushActuator(); });
+    _server.on("/stopActuator", [this]() { routeGetStopActuator(); });
+    _server.on("/pullActuator", [this]() { routeGetPullActuator(); });
 
     _server.onNotFound([this]() { routeGetNotFound(); });
 }
@@ -172,9 +173,9 @@ String HTTPWebServer::javascriptAddActuatorControlButtonEventListeners() {
         String("<script>") +
 
             String("const grpPressButtons = [") +
-	            String("{\"id\": \"btnPull\", \"urlStart\": \"//") + localIP + String("/actuatorPull\", \"urlEnd\": \"//") + localIP + String("/actuatorTurnOff\"},") +
-	            String("{\"id\": \"btnPush\", \"urlStart\": \"//") + localIP + String("/actuatorPush\", \"urlEnd\": \"//") + localIP + String("/actuatorTurnOff\"},") +
-	            String("{\"id\": \"btnTurnOff\", \"urlStart\": \"//") + localIP + String("/actuatorTurnOff\", \"urlEnd\": \"//") + localIP + String("/actuatorTurnOff\"}") +
+	            String("{\"id\": \"btnPull\", \"urlStart\": \"//") + localIP + String("/pullActuator\", \"urlEnd\": \"//") + localIP + String("/stopActuator\"},") +
+	            String("{\"id\": \"btnPush\", \"urlStart\": \"//") + localIP + String("/pushActuator\", \"urlEnd\": \"//") + localIP + String("/stopActuator\"},") +
+	            String("{\"id\": \"btnTurnOff\", \"urlStart\": \"//") + localIP + String("/stopActuator\", \"urlEnd\": \"//") + localIP + String("/stopActuator\"}") +
             String("];") +
 
        
@@ -191,13 +192,13 @@ String HTTPWebServer::javascriptAddActuatorControlButtonEventListeners() {
 
             String("const handleStart = (e) => {") +
                 String("callAPIFromButton(e.currentTarget.urlStart, e.currentTarget.id, \"tdActuatorMovementResult\", false);") +
-	            String("e.stopPropagation();") +
+	            String("e.STOPropagation();") +
 	            String("e.preventDefault();") +
             String("};") +
 
             String("const handleEnd = (e) => {") +
 	            String("callAPIFromButton(e.currentTarget.urlEnd, e.currentTarget.id, \"tdActuatorMovementResult\", true);") +
-	            String("e.stopPropagation();") +
+	            String("e.STOPropagation();") +
 	            String("e.preventDefault();") +
             String("};") +
  
@@ -224,11 +225,11 @@ void HTTPWebServer::routeGetControl() {
 	        String("</thead>") +
 	        String("<tbody>") +
 		        String("<tr>") +
-                    String("<td>") + String("<button id='btnActuatorOpenHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorOpenHatch\", \"btnActuatorOpenHatch\", \"tdActuatorProcessResult\", true)' class=\"button-symbol\">&UpArrowBar;</button>") + String("</td>") +
+                    String("<td>") + String("<button id='btnOpenHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/openHatch\", \"btnOpenHatch\", \"tdActuatorProcessResult\", true)' class=\"button-symbol\">&UpArrowBar;</button>") + String("</td>") +
                     String("<td>Open hatch</td>") +
 		        String("</tr>") +
 		        String("<tr>") +
-                    String("<td>") + String("<button id='btnActuatorCloseHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/actuatorCloseHatch\", \"btnActuatorCloseHatch\", \"tdActuatorProcessResult\", true)' class=\"button-symbol\">&DownArrowBar;</button>") + String("</td>") +
+                    String("<td>") + String("<button id='btnCloseHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/closeHatch\", \"btnCloseHatch\", \"tdActuatorProcessResult\", true)' class=\"button-symbol\">&DownArrowBar;</button>") + String("</td>") +
                     String("<td>Close hatch</td>") +                   
 		        String("</tr>") +
 	        String("</tbody>") +
@@ -385,26 +386,33 @@ void HTTPWebServer::routeGetInfo() {
     _server.send(200, "text/html", html);
 }
 
-void HTTPWebServer::routeActuatorOpenHatch() {
+void HTTPWebServer::routeGetOpenHatch() {
+    _hatchRequest.setAction(HatchRequestAction::OPEN_HATCH);
+    _hatchRequest.setAcknowledged(false);
     _server.send(200, "text/plain", "Opening hatch");
 }
-void HTTPWebServer::routeGetActuatorCloseHatch() {
+
+void HTTPWebServer::routeGetCloseHatch() {
+    _hatchRequest.setAction(HatchRequestAction::CLOSE_HATCH);
+    _hatchRequest.setAcknowledged(false);
     _server.send(200, "text/plain", "Closing hatch");
 }
 
-void HTTPWebServer::routeActuatorPush() {
-    _actionRequest.setAction(ActuatorAction::PUSH);
-    _actionRequest.setAcknowledged(false);
+void HTTPWebServer::routeGetPushActuator() {
+   _hatchRequest.setAction(HatchRequestAction::DOWN);
+   _hatchRequest.setAcknowledged(false);
     _server.send(200, "text/plain", "Extends actuator...");
 }
-void HTTPWebServer::routeActuatorTurnOff() {
-    _actionRequest.setAction(ActuatorAction::TURN_OFF);
-    _actionRequest.setAcknowledged(false);
+
+void HTTPWebServer::routeGetStopActuator() {
+    _hatchRequest.setAction(HatchRequestAction::STOP);
+    _hatchRequest.setAcknowledged(false);
     _server.send(200, "text/plain", "Turned off actuator");
 }
-void HTTPWebServer::routeActuatorPull() {
-    _actionRequest.setAction(ActuatorAction::PULL);
-    _actionRequest.setAcknowledged(false);
+
+void HTTPWebServer::routeGetPullActuator() {
+    _hatchRequest.setAction(HatchRequestAction::UP);
+    _hatchRequest.setAcknowledged(false);
     _server.send(200, "text/plain", "Contracting actuator...");
 }
 
