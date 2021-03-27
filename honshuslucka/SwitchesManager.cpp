@@ -28,6 +28,7 @@ void SwitchesManager::initialize() {
 };
 
 bool SwitchesManager::newButtonInteractionMayBePerformed() {
+    return true;
     unsigned long currentTimeMs = millis();
 
     if (currentTimeMs < _lastAcknowledgementChangedMs) {

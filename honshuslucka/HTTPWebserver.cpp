@@ -192,13 +192,13 @@ String HTTPWebServer::javascriptAddActuatorControlButtonEventListeners() {
 
             String("const handleStart = (e) => {") +
                 String("callAPIFromButton(e.currentTarget.urlStart, e.currentTarget.id, \"tdActuatorMovementResult\", false);") +
-	            String("e.STOPropagation();") +
+	            String("e.stopPropagation();") +
 	            String("e.preventDefault();") +
             String("};") +
 
             String("const handleEnd = (e) => {") +
 	            String("callAPIFromButton(e.currentTarget.urlEnd, e.currentTarget.id, \"tdActuatorMovementResult\", true);") +
-	            String("e.STOPropagation();") +
+	            String("e.stopPropagation();") +
 	            String("e.preventDefault();") +
             String("};") +
  

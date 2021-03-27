@@ -94,7 +94,6 @@ void setup() {
 
     state = ChickenHatchStates::STAND_BY;
 
-    Serial.println("1");
     /*
     nextBlinkStepToPerform = 0;
     m = ActuatorAction::turnOff;
@@ -109,12 +108,24 @@ bool requestsForSameLevel() {
 
 bool requestsForOtherLevel() {
 
-    const bool buttonRequestIsAcknowledged = hatchRequests[0].getAcknowledged();
-    const bool httpRequestIsAcknowledged = hatchRequests[1].getAcknowledged();
+    const bool buttonRequestActionIsNotStop = hatchRequests[0].getAction() != HatchRequestAction::STOP;
+    const bool buttonRequestIsNotAcknowledged = !hatchRequests[0].getAcknowledged();
 
-    const bool anyActionRequestIsNotAcknowledged = !(buttonRequestIsAcknowledged && httpRequestIsAcknowledged);
+    const bool buttonRequestActionIsNotStopAndIsNotAcknowledged = buttonRequestActionIsNotStop && buttonRequestIsNotAcknowledged;
 
-    return anyActionRequestIsNotAcknowledged;
+
+    const bool httpRequestActionIsNotStop = hatchRequests[1].getAction() != HatchRequestAction::STOP;
+    const bool httpRequestIsNotAcknowledged = !hatchRequests[1].getAcknowledged();
+
+    const bool httpRequestActionIsNotStopAndIsNotAcknowledged = httpRequestActionIsNotStop && httpRequestIsNotAcknowledged;
+
+    if (buttonRequestActionIsNotStopAndIsNotAcknowledged || httpRequestActionIsNotStopAndIsNotAcknowledged) {
+
+        return true;
+    }
+
+    return false;
+
 }
 
 HatchRequestAction getPrioritizedHatchRequestAction() {
@@ -132,6 +143,9 @@ HatchRequestAction getPrioritizedHatchRequestAction() {
 }
 
 bool stopRequested() {
+    // this function exist for safety, any release of real button/html button will generate a stop request which always should be most important
+
+    // we should have lidar logic here as well
 
     if (!hatchRequests[0].getAcknowledged() && (hatchRequests[0].getAction() == HatchRequestAction::STOP)) { // 1st important (button request)
         return true;
@@ -167,17 +181,21 @@ ActuatorAction hatchAction2ActuatorAction(HatchRequestAction hatchAction) {
         case HatchRequestAction::OPEN_HATCH:
             break;
     }
-    actuatorAction;
+    return actuatorAction;
 }
 
 void PerformCurrentActuatorAction() {
+
     switch (currentActuatorActionToPerform) {
+
         case ActuatorAction::TURN_OFF:
             actuator.turnOFF();
             break;
+
         case ActuatorAction::PULL:
             actuator.pull();
             break;
+
         case ActuatorAction::PUSH:
             actuator.push();
             break;
@@ -185,56 +203,57 @@ void PerformCurrentActuatorAction() {
 }
 
 void ChickenHatchStateMachine() {
+
     switch (state)
     {
+
         case ChickenHatchStates::STAND_BY:
+
             currentActuatorActionToPerform = ActuatorAction::TURN_OFF;
 
             if (requestsForSameLevel()) {
-
                 state = ChickenHatchStates::STOP;
             }
+                      
             else if (requestsForOtherLevel()) {
-
-                Serial.println("C");
                 currentHighestPrioritizedHatchRequest = getPrioritizedHatchRequestAction();
                 acknowledgeAllCurrentHacthRequests();
+                Serial.print("currentHighestPrioritizedHatchRequest: ");
                 currentActuatorActionToPerform = hatchAction2ActuatorAction(currentHighestPrioritizedHatchRequest);
 
+                Serial.print("currentActuatorActionToPerform: ");
+                Serial.println(currentActuatorActionToPerform);
                 state = ChickenHatchStates::MOVE;
             }
             break;
+
         case ChickenHatchStates::MOVE:
 
             if (stopRequested()) {
-
-                Serial.println("D");
-                state = ChickenHatchStates::MOVE;
                 acknowledgeAllCurrentHacthRequests();
 
                 state = ChickenHatchStates::STOP;
             }
+
             break;
+
         case ChickenHatchStates::STOP:
+
             currentActuatorActionToPerform = ActuatorAction::TURN_OFF;
 
             state = ChickenHatchStates::WAIT_1_S;
             hatchStopChrono = millis();
+
             break;
+        
         case ChickenHatchStates::WAIT_1_S:
 
-            //Serial.println("F");
             if (millis() - hatchStopChrono > 1000) {
                 state = ChickenHatchStates::STAND_BY;
-
-                Serial.println("G");
             }
+
             break;
 
-        default:
-
-            Serial.println("F");
-            break;
     }   
 }
 
@@ -252,66 +271,5 @@ void loop() {
         pubSubClient.loop();
     }
 
-    PerformCurrentActuatorAction();
- /*
-    while (anyButtonIsPressed())
-    {
-        m = ActuatorAction::turnOff;
-        blinker.setSequencePerformingAction();
-        while (actuatorPullButton.isPressed())
-        {
-            actuator.pull();
-
-            if (!blinker.blinkSequenceCompleted()) {
-                nextBlinkStepToPerform = blinker.performBlinkSequenceStep(nextBlinkStepToPerform);
-            }
-            else {
-                nextBlinkStepToPerform = blinker.setSequencePerformingAction();
-            }
-            yield();
-        }
-
-        while (actuatorPushButton.isPressed())
-        {
-            actuator.push();
-
-            if (!blinker.blinkSequenceCompleted()) {
-                nextBlinkStepToPerform = blinker.performBlinkSequenceStep(nextBlinkStepToPerform);
-            }
-            else {
-                nextBlinkStepToPerform = blinker.setSequencePerformingAction();
-            }
-            yield();
-        }
-
-        nextBlinkStepToPerform = blinker.setSequenceStandByNoWifi();
-        actuator.turnOFF();
-        delay(10);
-    }
-    
-    if (!anyButtonIsPressed())
-    {
-        switch (m) {
-            case ActuatorAction::pull:
-                actuator.pull();
-                break;
-            case ActuatorAction::turnOff:
-                actuator.turnOFF();
-                break;
-            case ActuatorAction::push:
-                actuator.push();
-                break;
-        }
-    }   
-    
-    if (!blinker.blinkSequenceCompleted()) {
-        nextBlinkStepToPerform = blinker.performBlinkSequenceStep(nextBlinkStepToPerform);
-    }
-    else {
-        nextBlinkStepToPerform = blinker.setSequenceStandByNoWifi();
-    }
-
-    delay(10);
-
-    */
+   PerformCurrentActuatorAction();
 }
