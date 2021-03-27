@@ -151,7 +151,7 @@ bool stopRequested() {
         return true;
     }
 
-    if (!hatchRequests[1].getAcknowledged() && (hatchRequests[0].getAction() == HatchRequestAction::STOP)) { // 2nd important (http requeest)
+    if (!hatchRequests[1].getAcknowledged() && (hatchRequests[1].getAction() == HatchRequestAction::STOP)) { // 2nd important (http requeest)
         return true;
     }
     return false;
@@ -218,11 +218,8 @@ void ChickenHatchStateMachine() {
             else if (requestsForOtherLevel()) {
                 currentHighestPrioritizedHatchRequest = getPrioritizedHatchRequestAction();
                 acknowledgeAllCurrentHacthRequests();
-                Serial.print("currentHighestPrioritizedHatchRequest: ");
-                currentActuatorActionToPerform = hatchAction2ActuatorAction(currentHighestPrioritizedHatchRequest);
 
-                Serial.print("currentActuatorActionToPerform: ");
-                Serial.println(currentActuatorActionToPerform);
+                currentActuatorActionToPerform = hatchAction2ActuatorAction(currentHighestPrioritizedHatchRequest);
                 state = ChickenHatchStates::MOVE;
             }
             break;
