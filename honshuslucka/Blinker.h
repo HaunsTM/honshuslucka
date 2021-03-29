@@ -13,32 +13,51 @@ public:
 
     void initialize();
 
-    int setErrorState();
-    int setSequenceHttpRequest();
-    int setSequenceMqttArrived();
-    int setSequencePerformingAction();
-    int setSequenceStandBy();
-    int setSequenceStandByNoWifi();
+    enum class BlinkerSequence {
+        EMPTY,
+        ERROR,
+        HTTP_REQUEST,
+        PERFORMING_MOVE,
+        PAUSE_1_S,
+        STAND_BY,
+        STAND_BY_NON_WIFI
+    };
 
-    int performBlinkSequenceStep(int stepToPerform);
-    bool blinkSequenceCompleted();
+    void start();
+    void stop();
+
+    void setBlinkerSequence(BlinkerSequence blinkerSequence);
+    void handleBlinker();
+
+
+private:
+
+    static const int ELEMENT_COUNT_MAX = 10;
+    typedef Vector<StateAndDuration> Elements;
+    StateAndDuration _blinkSequenceArray[ELEMENT_COUNT_MAX];
+    Elements _currentlyPerformingBlinkerSequenceList;
+
+    bool _initialized;
+    bool _isRunning;
+    OnboardLED _onboardLED;
+
+    BlinkerSequence _previousBlinkerSequence;
+    static const int INITIAL_STEP_TO_PERFORM = 0;
+    unsigned long _currentlyPerformingBlinkerSequenceStepStartedAtMillis;
+    int _currentlyPerformingBlinkerSequenceStepIndex;
 
     void set(OnboardLED::LEDState state);
 
-private:
-    static const int ELEMENT_COUNT_MAX = 10;
-    static const int INITIAL_STEP_TO_PERFORM = 0;
-    OnboardLED _onboardLED;
-    unsigned long _previousMillis;
-    unsigned long _lastPerformedStep;
+    void setSequenceErrorState();
+    void setSequenceHttpRequest();
+    void setSequencePause1s();
+    void setSequencePerformingMove();
+    void setSequenceStandBy();
+    void setSequenceStandByNoWifi();
 
-    int initialSequenceStepToPerform();
 
-    typedef Vector<StateAndDuration> Elements;
-    StateAndDuration _blinkSequenceArray[ELEMENT_COUNT_MAX];
-    Elements _blinkSequenceList;
-
-    bool _initialized;
+    void performBlinkSequence();
+    int nextCalculatedStepIndex(int currentStepIndex);
 };
 
 #endif

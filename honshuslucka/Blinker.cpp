@@ -9,177 +9,194 @@ Blinker::Blinker(OnboardLED& onboardLED) {
     _initialized = false;
 }
 
-int Blinker::initialSequenceStepToPerform() {
-    _previousMillis = 0;
-    _lastPerformedStep = INITIAL_STEP_TO_PERFORM;
-    return INITIAL_STEP_TO_PERFORM;
-}
-
 void Blinker::initialize() {
 
     if (!_initialized) {
 
-        _blinkSequenceList.setStorage(_blinkSequenceArray);
+        _currentlyPerformingBlinkerSequenceList.setStorage(_blinkSequenceArray);
 
+        _isRunning = false;
         _onboardLED.setOff();
+
+        _previousBlinkerSequence = BlinkerSequence::EMPTY;
+        _currentlyPerformingBlinkerSequenceStepIndex = INITIAL_STEP_TO_PERFORM;
         _initialized = true;
     }
 }
 
-int Blinker::setErrorState() {
-    _blinkSequenceList.clear();
+void Blinker::setSequenceErrorState() {
 
     StateAndDuration ledOn(OnboardLED::LEDState::ON, 50);
     StateAndDuration ledOffShort(OnboardLED::LEDState::OFF, 50);
     StateAndDuration ledOff(OnboardLED::LEDState::OFF, 750);
-    _blinkSequenceList.push_back(ledOn);
-    _blinkSequenceList.push_back(ledOffShort);
-    _blinkSequenceList.push_back(ledOn);
-    _blinkSequenceList.push_back(ledOffShort);
-    _blinkSequenceList.push_back(ledOn);
-    _blinkSequenceList.push_back(ledOff);
-
-    return initialSequenceStepToPerform();
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOffShort);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOffShort);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOff);
 };
 
-int Blinker::setSequenceHttpRequest() {
-    _blinkSequenceList.clear();
+void Blinker::setSequenceHttpRequest() {
+    StateAndDuration ledOn(OnboardLED::LEDState::ON, 50);
+    StateAndDuration ledOffShort(OnboardLED::LEDState::OFF, 50);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOffShort);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOffShort);
+};
+
+void Blinker::setSequencePause1s() {
 
     StateAndDuration ledOn(OnboardLED::LEDState::ON, 50);
     StateAndDuration ledOffShort(OnboardLED::LEDState::OFF, 50);
-    _blinkSequenceList.push_back(ledOn);
-    _blinkSequenceList.push_back(ledOffShort);
-    _blinkSequenceList.push_back(ledOn);
-    _blinkSequenceList.push_back(ledOffShort);
-
-    return initialSequenceStepToPerform();
+    StateAndDuration ledOff(OnboardLED::LEDState::OFF, 850);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOffShort);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOff);
 };
 
-int Blinker::setSequenceMqttArrived() {
-    int cloneOfSetSequenceHttpRequest = setSequenceHttpRequest();
-
-    return initialSequenceStepToPerform();
-};
-
-int Blinker::setSequencePerformingAction() {
-    _blinkSequenceList.clear();
+void Blinker::setSequencePerformingMove() {
 
     StateAndDuration ledOn(OnboardLED::LEDState::ON, 50);
     StateAndDuration ledOffLong(OnboardLED::LEDState::OFF, 450);
-    _blinkSequenceList.push_back(ledOn);
-    _blinkSequenceList.push_back(ledOffLong);
-
-    return initialSequenceStepToPerform();
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOffLong);
 };
 
-int Blinker::setSequenceStandBy() {
-    _blinkSequenceList.clear();
+void Blinker::setSequenceStandBy() {
 
     StateAndDuration ledOn(OnboardLED::LEDState::ON, 50);
     StateAndDuration ledOff(OnboardLED::LEDState::OFF, 4950);
-    _blinkSequenceList.push_back(ledOn);
-    _blinkSequenceList.push_back(ledOff);
-
-    return initialSequenceStepToPerform();
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOff);
 };
 
-int Blinker::setSequenceStandByNoWifi() {
-    _blinkSequenceList.clear();
+void Blinker::setSequenceStandByNoWifi() {
 
     StateAndDuration ledOn(OnboardLED::LEDState::ON, 50);
     StateAndDuration ledOffShort(OnboardLED::LEDState::OFF, 50);
     StateAndDuration ledOffLong(OnboardLED::LEDState::OFF, 4750);
-    _blinkSequenceList.push_back(ledOn);
-    _blinkSequenceList.push_back(ledOffShort);
-    _blinkSequenceList.push_back(ledOn);
-    _blinkSequenceList.push_back(ledOffShort);
-    _blinkSequenceList.push_back(ledOn);
-    _blinkSequenceList.push_back(ledOffLong);
-
-    return initialSequenceStepToPerform();
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOffShort);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOffShort);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOn);
+    _currentlyPerformingBlinkerSequenceList.push_back(ledOffLong);
 };
 
 void Blinker::set(OnboardLED::LEDState state) {
-    String s;
-    char buf[12];
+
     switch (state) {
         case OnboardLED::LEDState::ON:
-            s += String("LED - on :  ") + itoa(millis(), buf, 10) + String("\n");
             _onboardLED.setOn();
             break;
         case OnboardLED::LEDState::OFF:
-            s += String("LED - off :  ") + itoa(millis(), buf, 10) + String("\n");
             _onboardLED.setOff();
             break;
     }
-     // Serial.println(s.c_str());
+
 };
 
-bool Blinker::blinkSequenceCompleted() {   
+int Blinker::nextCalculatedStepIndex(int currentStepIndex) {
 
-    char buf[12];
-    String s;
+    int blinkSequenceListSize = _currentlyPerformingBlinkerSequenceList.size();
+    int maxStepIndex = blinkSequenceListSize - 1;
 
-    int blinkSequenceListSize = _blinkSequenceList.size();
+    if (currentStepIndex + 1 <= maxStepIndex) {
 
-    s += String("-------------------------------")  + String("\n");
-    s += String("blinkSequenceListSize: ") + itoa(blinkSequenceListSize, buf, 10) + String("\n");
-
-    bool blinkSequenceNotCompleted;
-
-    if (blinkSequenceListSize > 0) {
-        int maxStepIndex = blinkSequenceListSize - 1;
-        blinkSequenceNotCompleted = _lastPerformedStep <= maxStepIndex;
-        s += String("maxStepIndex: ") + itoa(maxStepIndex, buf, 10) + String("\n");
-        s += String("_lastPerformedStep: ") + itoa(_lastPerformedStep, buf, 10) + String("\n");
-        s += String("blinkSequenceNotCompleted: ") + (blinkSequenceNotCompleted?"true":"false") + String("\n");
-        //Serial.println(s.c_str());
-
-        return !blinkSequenceNotCompleted;
-    }; 
-    s += String("blinkSequenceCompleted: ") + String("true") + String("\n");
-    // Serial.println(s.c_str());
-    return true;
+        return currentStepIndex + 1;
+    };
+    return INITIAL_STEP_TO_PERFORM;
 }
 
-int Blinker::performBlinkSequenceStep(int stepToPossiblyMoveOnTo) {
+void Blinker::performBlinkSequence() {
 
-    String s;
-    char buf[12];
-
-    s += String("-------------- Blinker::performBlinkSequenceStep() --------------\n");
     unsigned long currentMillis = millis();
-    int nextStep = stepToPossiblyMoveOnTo;
-    int finalStepToPerform = _blinkSequenceList.size() - 1;
+    unsigned int interval = _currentlyPerformingBlinkerSequenceList.at(_currentlyPerformingBlinkerSequenceStepIndex).stateLengthMs();
+    unsigned long nextStepCanBePerformedAtMillis = _currentlyPerformingBlinkerSequenceStepStartedAtMillis + interval;
+    const bool timeIsDueToPerformNextStep = nextStepCanBePerformedAtMillis < currentMillis;
+    
+    int blinkSequenceListSize = _currentlyPerformingBlinkerSequenceList.size();
 
-    OnboardLED::LEDState ledStateForNextStep = _blinkSequenceList.at(stepToPossiblyMoveOnTo).ledState();
-    bool performStep = false;
+    if (timeIsDueToPerformNextStep) {
 
+        int nextStepIndex = nextCalculatedStepIndex(_currentlyPerformingBlinkerSequenceStepIndex);
+        OnboardLED::LEDState ledStateForNextStep = _currentlyPerformingBlinkerSequenceList.at(nextStepIndex).ledState();
 
-    if (stepToPossiblyMoveOnTo == INITIAL_STEP_TO_PERFORM) {
-        performStep = true;
-    }
-    else {
-        int previousStep = stepToPossiblyMoveOnTo - 1;
-        unsigned int interval = _blinkSequenceList.at(previousStep).stateLengthMs();
-        unsigned long timeWhenNextStepCanBePerformedEarliest = _previousMillis + interval;
-        performStep = currentMillis >= timeWhenNextStepCanBePerformedEarliest;
-
-        s += String("stepToPossiblyMoveOnTo:  ") + itoa(stepToPossiblyMoveOnTo, buf, 10) + String("\n");
-        s += String("interval: ") + itoa(interval, buf, 10) + String("\n");
-        s += String("_previousMillis: ") + itoa(_previousMillis, buf, 10) + String("\n");
-        s += String("currentMillis: ") + itoa(currentMillis, buf, 10) + String("\n");
-        s += String("timeWhenNextStepCanBePerformedEarliest: ") + itoa(timeWhenNextStepCanBePerformedEarliest, buf, 10) + String("\n");
-        s += String("performStep: ") + (performStep?"true":"false") + String("\n");
-    }
-
-    if (performStep) {
-        _previousMillis = currentMillis;
         set(ledStateForNextStep);
-        _lastPerformedStep = stepToPossiblyMoveOnTo;
-        nextStep = stepToPossiblyMoveOnTo + 1;
+        _currentlyPerformingBlinkerSequenceStepStartedAtMillis = currentMillis;
+        _currentlyPerformingBlinkerSequenceStepIndex = nextStepIndex;
     }
-    s += String("\n");
-    // Serial.println(s.c_str());
-    return nextStep;
+};
+
+
+void Blinker::start() {
+
+    _currentlyPerformingBlinkerSequenceStepIndex = INITIAL_STEP_TO_PERFORM;
+    _isRunning = true;
+
+};
+
+void Blinker::stop() {
+
+    set(OnboardLED::LEDState::OFF);
+    _isRunning = false;
+
+};
+
+void Blinker::setBlinkerSequence(BlinkerSequence currentBlinkerSequence) {
+
+    const bool blinkerSequenceHasChanged = _previousBlinkerSequence != currentBlinkerSequence;
+
+    if (blinkerSequenceHasChanged) {
+
+        _previousBlinkerSequence = currentBlinkerSequence;
+        _currentlyPerformingBlinkerSequenceStepIndex = INITIAL_STEP_TO_PERFORM;
+        _currentlyPerformingBlinkerSequenceList.clear();
+
+        switch (currentBlinkerSequence)
+        {
+            case Blinker::BlinkerSequence::EMPTY:
+                break;
+
+            case Blinker::BlinkerSequence::ERROR:
+                setSequenceErrorState();
+                break;
+
+            case Blinker::BlinkerSequence::HTTP_REQUEST:
+                setSequenceHttpRequest();
+                break;
+
+            case Blinker::BlinkerSequence::PAUSE_1_S:
+                setSequencePause1s();
+                break;
+
+            case Blinker::BlinkerSequence::PERFORMING_MOVE:
+                setSequencePerformingMove();
+                break;
+
+            case Blinker::BlinkerSequence::STAND_BY:
+                setSequenceStandBy();
+                break;
+
+            case Blinker::BlinkerSequence::STAND_BY_NON_WIFI:
+                setSequenceStandByNoWifi();
+                break;
+
+            default:
+                setSequenceErrorState();
+                break;
+        }
+
+    }
+};
+
+void Blinker::handleBlinker() {
+
+    if (_isRunning) {
+        performBlinkSequence();
+    }
+
 };

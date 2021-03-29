@@ -81,6 +81,7 @@ void setup() {
     onboardLED.initialize();
 
     blinker.initialize();
+    blinker.start();
      
     actuator.initialize();
     actuatorPullButton.initialize();
@@ -94,11 +95,6 @@ void setup() {
 
     state = ChickenHatchStates::STAND_BY;
 
-    /*
-    nextBlinkStepToPerform = 0;
-    m = ActuatorAction::turnOff;
-    actuator.turnOFF();
-    */
 }
 
 bool requestsForSameLevel() {
@@ -210,6 +206,8 @@ void ChickenHatchStateMachine() {
         case ChickenHatchStates::STAND_BY:
 
             currentActuatorActionToPerform = ActuatorAction::TURN_OFF;
+            
+            wifiManager.isConnectedToWifi() ? blinker.setBlinkerSequence(Blinker::BlinkerSequence::STAND_BY) : blinker.setBlinkerSequence(Blinker::BlinkerSequence::STAND_BY_NON_WIFI);
 
             if (requestsForSameLevel()) {
                 state = ChickenHatchStates::STOP;
@@ -225,6 +223,7 @@ void ChickenHatchStateMachine() {
             break;
 
         case ChickenHatchStates::MOVE:
+            blinker.setBlinkerSequence(Blinker::BlinkerSequence::PERFORMING_MOVE);
 
             if (stopRequested()) {
                 acknowledgeAllCurrentHacthRequests();
@@ -269,4 +268,6 @@ void loop() {
     }
 
    PerformCurrentActuatorAction();
+
+   blinker.handleBlinker();
 }
