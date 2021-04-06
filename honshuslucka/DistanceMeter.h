@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "DistanceMeterData.h"
 #include <SoftwareSerial.h>
 #include <TFMPlus.h> 
 
@@ -8,12 +9,14 @@
 class DistanceMeter {
 
 public:
-    DistanceMeter(SoftwareSerial& customSerialForTFMini);
+    DistanceMeter(SoftwareSerial& customSerialForTFMini, DistanceMeterData& currentMeterData);
 
     void initialize();
     void handleDistanceMeter();
 
 private:
+    DistanceMeterData& _currentMeterData;
+    DistanceMeterData _previousMeterData;
     SoftwareSerial& _customSerialForTFMini;
     TFMPlus _tfmP;
 

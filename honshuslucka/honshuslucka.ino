@@ -20,7 +20,18 @@
 
 TFMPlus tfmP;         // Create a TFMini Plus object  
 SoftwareSerial mySerial(PIN_D5_GPIO14_SCLK,PIN_D0_GPIO16_WAKE); //define software serial port name as mySerial and define D5 as RX and D0 as TX
-DistanceMeter distanceMeter(mySerial);
+DistanceMeterData currentMeterData;
+DistanceMeterData previousMeterData;
+DistanceMeter distanceMeter(mySerial, currentMeterData);
+
+enum class HatchLocomotion {
+    UP,
+    NO_CHANGE,
+    DOWN
+};
+
+HatchLocomotion actualHatchLocomotion;
+HatchLocomotion previousHatchLocomotion;
 
 OnboardLED onboardLED;
 Blinker blinker(onboardLED);
@@ -35,8 +46,6 @@ TextMessageGenerator tMG(
     SETTINGS_DATA_MQTT_BROKER_URL, SETTINGS_DATA_MQTT_PORT,
     SETTINGS_DATA_MQTT_USERNAME, SETTINGS_DATA_MQTT_PASSWORD,
     SETTINGS_DATA_MQTT_TOPIC_SUBSCRIBE, SETTINGS_DATA_MQTT_TOPIC_PUBLISH);
-
-
 
 HatchRequest hatchRequests[2] = { HatchRequest("switch button requested"), HatchRequest("http requested") };
 
@@ -76,24 +85,11 @@ unsigned long hatchStopChrono;
 
 void setup() {
     Serial.begin(SETTINGS_DATA_SERIAL_MONITOR_BAUD); // initialize serial monitor with 115200 baud
-delay(20);               // Give port time to initalize
-/*
-    Serial.print("\r\nTFMPlus Library Example - 18JUN2020\r\n");  // say 'hello'
-
-    mySerial.begin( 115200);  // Initialize TFMPLus device serial port.
-    delay(20);               // Give port time to initalize
-    tfmP.begin( &mySerial);   // Initialize device library object and...
-                             // pass device serial port to the object.
-
-
-    delay(500);  // added to allow the System Rest enough time to complete
-    tfmP.sendCommand( SET_FRAME_RATE, FRAME_20);
-*/
-distanceMeter.initialize();
-
-
-
-
+    delay(20);
+    distanceMeter.initialize();
+    delay(500);            // And wait for half a second.
+    actualHatchLocomotion = HatchLocomotion::NO_CHANGE;
+    previousHatchLocomotion = HatchLocomotion::NO_CHANGE;
 
     onboardLED.initialize();
 
@@ -270,6 +266,34 @@ void ChickenHatchStateMachine() {
     }   
 }
 
+void indicateMoving() {
+
+    if (currentMeterData.distanceToObjectCm > previousMeterData.distanceToObjectCm) {
+        actualHatchLocomotion = HatchLocomotion::DOWN;
+    } else if (currentMeterData.distanceToObjectCm < previousMeterData.distanceToObjectCm) {        
+        actualHatchLocomotion = HatchLocomotion::UP;
+    } else {
+        actualHatchLocomotion = HatchLocomotion::NO_CHANGE;
+    }
+    if (actualHatchLocomotion != previousHatchLocomotion) {
+        switch (actualHatchLocomotion) {
+            case HatchLocomotion::UP:
+                Serial.print("UP - ");
+                break;
+            case HatchLocomotion::DOWN:
+                Serial.print("DOWN - ");
+                break;
+            case HatchLocomotion::NO_CHANGE:
+                Serial.print("NO_CHANGE - ");
+                break;
+        };
+        Serial.print(currentMeterData.distanceToObjectCm);
+        Serial.println(" cm");
+
+    }
+    actualHatchLocomotion = previousHatchLocomotion;
+};
+
 void loop() {
     switchesManager.monitorInteractions();
     wifiManager.monitorWiFi();
@@ -284,9 +308,11 @@ void loop() {
         pubSubClient.loop();
     }
 
-   PerformCurrentActuatorAction();
+    PerformCurrentActuatorAction();
 
-   blinker.handleBlinker();
+    blinker.handleBlinker();
 
-   distanceMeter.handleDistanceMeter();
+    previousMeterData = currentMeterData;
+    distanceMeter.handleDistanceMeter();
+    indicateMoving();
 }
