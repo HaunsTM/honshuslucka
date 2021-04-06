@@ -18,7 +18,7 @@
 #include <TFMPlus.h>  // Include TFMini Plus Library v1.4.1
 
 TFMPlus tfmP;         // Create a TFMini Plus object  
-SoftwareSerial mySerial(D5,D0); //define software serial port name as mySerial and define D5 as RX and D0 as TX
+SoftwareSerial mySerial(PIN_D5_GPIO14_SCLK,PIN_D0_GPIO16_WAKE); //define software serial port name as mySerial and define D5 as RX and D0 as TX
 
 OnboardLED onboardLED;
 Blinker blinker(onboardLED);
@@ -34,7 +34,6 @@ TextMessageGenerator tMG(
     SETTINGS_DATA_MQTT_USERNAME, SETTINGS_DATA_MQTT_PASSWORD,
     SETTINGS_DATA_MQTT_TOPIC_SUBSCRIBE, SETTINGS_DATA_MQTT_TOPIC_PUBLISH);
 
-int nextBlinkStepToPerform = 0;
 ActuatorAction m;
 
 HatchRequest hatchRequests[2] = { HatchRequest("switch button requested"), HatchRequest("http requested") };
