@@ -1,25 +1,24 @@
-#include <Arduino.h>
-#include "TextMessageGenerator.h"
-
-#include <Vector.h>
-
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
 #include "Actuator.h"
-#include "Blinker.h"
 #include "ActuatorAction.h"
+#include "Blinker.h"
+#include "HTTPWebServer.h"
+#include "HatchRequest.h"
+#include "MQTTCommunicator.h"
 #include "OnboardLED.h"
-#include "Switch.h"
-#include "SwitchesManager.h"
 #include "Pins.h"
 #include "SettingsData.h"
-#include "HatchRequest.h"
-#include "WifiManager.h"
-#include "HTTPWebServer.h"
-
+#include "Switch.h"
+#include "SwitchesManager.h"
 #include "TextMessageGenerator.h"
-#include "MQTTCommunicator.h"
+#include "WifiManager.h"
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+#include <SoftwareSerial.h>
+#include <TFMPlus.h>  // Include TFMini Plus Library v1.4.1
 
+TFMPlus tfmP;         // Create a TFMini Plus object  
+SoftwareSerial mySerial(D5,D0); //define software serial port name as mySerial and define D5 as RX and D0 as TX
 
 OnboardLED onboardLED;
 Blinker blinker(onboardLED);
@@ -77,6 +76,22 @@ unsigned long hatchStopChrono;
 
 void setup() {
     Serial.begin(SETTINGS_DATA_SERIAL_MONITOR_BAUD); // initialize serial monitor with 115200 baud
+delay(20);               // Give port time to initalize
+    Serial.print("\r\nTFMPlus Library Example - 18JUN2020\r\n");  // say 'hello'
+
+    mySerial.begin( 115200);  // Initialize TFMPLus device serial port.
+    delay(20);               // Give port time to initalize
+    tfmP.begin( &mySerial);   // Initialize device library object and...
+                             // pass device serial port to the object.
+
+
+    delay(500);  // added to allow the System Rest enough time to complete
+    tfmP.sendCommand( SET_FRAME_RATE, FRAME_20);
+
+
+
+
+
 
     onboardLED.initialize();
 
@@ -252,7 +267,10 @@ void ChickenHatchStateMachine() {
 
     }   
 }
-
+// Initialize variables
+int16_t tfDist = 0;    // Distance to object in centimeters
+int16_t tfFlux = 0;    // Strength or quality of return signal
+int16_t tfTemp = 0;    // Internal temperature of Lidar sensor chip
 void loop() {
     switchesManager.monitorInteractions();
     wifiManager.monitorWiFi();
@@ -270,4 +288,21 @@ void loop() {
    PerformCurrentActuatorAction();
 
    blinker.handleBlinker();
+
+   
+   delay(50);   // Loop delay to match the 20Hz data frame rate
+
+    if( tfmP.getData( tfDist, tfFlux, tfTemp)) // Get data from the device.
+    {
+      Serial.print( "Dist:  ");   // display distance,
+      Serial.print( tfDist);   // display distance,
+      Serial.print( "Flux:  ");   // display signal strength/quality,
+      Serial.print( tfFlux);   // display signal strength/quality,
+      Serial.print( "Temp:  ");   // display temperature,
+      Serial.println( tfTemp);   // display temperature,
+    }
+    else                  // If the command fails...
+    {
+      tfmP.printFrame();  // display the error and HEX dataa
+    }
 }

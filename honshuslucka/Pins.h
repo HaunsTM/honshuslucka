@@ -1,7 +1,6 @@
 #ifndef PINS_H
 #define PINS_H
 
-
 int const PIN_D0_GPIO16_WAKE = 16;
 int const PIN_D5_GPIO14_SCLK = 14;
 int const PIN_D6_GPIO12_MISO = 12;
