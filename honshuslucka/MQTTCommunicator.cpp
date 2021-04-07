@@ -4,7 +4,7 @@
 #include <PubSubClient.h>
 #include "TextMessageGenerator.h"
 
-MQTTCommunicator::MQTTCommunicator(PubSubClient& pubSubClient, ActuatorAction& m, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe)
+MQTTCommunicator::MQTTCommunicator(PubSubClient& pubSubClient, ActuatorAction& m, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword)
     :   
         _pubSubClient(pubSubClient),
         _m(m),
@@ -14,7 +14,6 @@ MQTTCommunicator::MQTTCommunicator(PubSubClient& pubSubClient, ActuatorAction& m
     _mqttPort = mqttPort;
     _mqttUsername = mqttUsername;
     _mqttPassword = mqttPassword;
-    _mqttTopicSubscribe = mqttTopicSubscribe;
 
     _initialized = false;
 }
@@ -48,7 +47,7 @@ void MQTTCommunicator::mqttReceived(char* topic, byte* payload, unsigned int len
 }
 
 void MQTTCommunicator::connectToMQTTBroker() {
-    // make sure we are notr connected already
+    // make sure we are not connected already
     if (!_pubSubClient.connected()) {
         // Create a random client ID
         String clientId = "ESP8266 Client - ";
@@ -59,12 +58,10 @@ void MQTTCommunicator::connectToMQTTBroker() {
         // Attempt to connect
         if (_pubSubClient.connect(clientId.c_str(), _mqttUsername.c_str(), _mqttPassword.c_str())) {
 
-            Serial.print(_tMG.mQTTServerConnectionEstablished().c_str());
-            // Once connected, publish an announcement...
-            //_pubSubClient.publish(SETTINGS_DATA_MQTT_TOPIC_PUBLISH.c_str(), "hello world");
+            Serial.print(_tMG.mQTTServerConnectionEstablished(WiFi.localIP().toString()).c_str());
 
-            // ... and resubscribe
-            _pubSubClient.subscribe(_mqttTopicSubscribe.c_str());
+            // add subscriptions here
+            //_pubSubClient.subscribe("iot/hen_house/ .... ");
         }
         else {
             Serial.print(_tMG.mQTTServerConnectionFailed(_pubSubClient.state()).c_str());

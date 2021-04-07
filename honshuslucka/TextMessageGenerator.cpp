@@ -3,7 +3,7 @@
 #include <string>
 #include "TextMessageGenerator.h"
 
-TextMessageGenerator::TextMessageGenerator(String firmwareVersion, int serialMonitorBaud, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe, String mqttTopicPublish) {
+TextMessageGenerator::TextMessageGenerator(String firmwareVersion, int serialMonitorBaud, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword) {
 
     _firmwareVersion = firmwareVersion;
     _serialMonitorBaud = serialMonitorBaud;
@@ -11,8 +11,6 @@ TextMessageGenerator::TextMessageGenerator(String firmwareVersion, int serialMon
     _mqttPort = mqttPort;
     _mqttUsername = mqttUsername;
     _mqttPassword = mqttPassword;
-    _mqttTopicSubscribe = mqttTopicSubscribe;
-    _mqttTopicPublish = mqttTopicPublish;
 };
 
 void TextMessageGenerator::initialize() {
@@ -40,7 +38,9 @@ String TextMessageGenerator::wifiConnectionEstablished(String SSID, String assig
         String("Established connection to wifi\n") +
         HEADER_UNDERLINE +
         String("Wifi SSID: ") + SSID + String("\n") +
-        String("Assigned IP: ") + assignedIP + String("\n\n\n");
+        String("Assigned IP: ") + assignedIP + String("\n\n\n") +
+        String("GUI controls: //") + assignedIP +
+        String("Available endpoints list: //") + assignedIP + String("/info");
     return message;
 };
 
@@ -63,17 +63,15 @@ String TextMessageGenerator::connectingToMQTTServer(String clientId) {
         String("Client Id: ") + clientId + String("\n") +
         String("Credentials to be used:\n") +
         String("Username: ") + _mqttUsername + String("\n") +
-        String("Password: ") + _mqttPassword + String("\n")+
-        String("Topics:\n") +
-        String("Subscription: ") + _mqttTopicSubscribe + String("\n") +
-        String("Publish: ") + _mqttTopicPublish + String("\n\n\n");
+        String("Password: ") + _mqttPassword + String("\n");
     return message;
 };
 
-String TextMessageGenerator::mQTTServerConnectionEstablished() {
+String TextMessageGenerator::mQTTServerConnectionEstablished(String assignedIP) {
     const String message =
         String("MQTT server connection established!\n") +
         HEADER_UNDERLINE +
+        String("Published topics list: //") + assignedIP + String("/info") +
         String("\n\n\n");
     return message;
 };
@@ -190,12 +188,4 @@ String TextMessageGenerator::mqttUsername() {
 
 String TextMessageGenerator::mqttPassword() {
     return _mqttPassword;
-};
-
-String TextMessageGenerator::mqttTopicSubscribe() {
-    return _mqttTopicSubscribe;
-};
-
-String TextMessageGenerator::mqttTopicPublish() {
-    return _mqttTopicPublish;
 };

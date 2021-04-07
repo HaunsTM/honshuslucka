@@ -363,7 +363,7 @@ void HTTPWebServer::routeGetInfo() {
 	        String("</thead>") +
 	        String("<tbody>") +
 		        String("<tr>") +
-                    String("<td>") + String("Get current read measurement from LIDAR detector in a JSON: <code>{\"distanceToObjectCm\":\"xxx\",\"strengthOrQualityOfReturnSignal\":\"yyy\",\"temperatureInternalOfLidarSensorChipCelsius\":\"zzz\"}</code>")  + String("</td>") +
+                    String("<td>") + String("Get current read measurement from LIDAR detector in a JSON:<br /><br /><pre>{\n\t\"distanceToObjectCm\":\"xxx\",\n\t\"strengthOrQualityOfReturnSignal\":\"yyy\",\n\t\"temperatureInternalOfLidarSensorChipCelsius\":\"zzz\"\n}</pre>")  + String("</td>") +
                     String("<td>") + String("<a href=\"//") + localIP + String("/lidarSensorData\">//") + localIP + String("/lidarSensorData</a>") + String("</td>") +
                 String("</tr>") +
 	        String("</tbody>") +
@@ -385,20 +385,27 @@ void HTTPWebServer::routeGetInfo() {
                     String("<td>") + _tMG.mqttPort() + String("</td>") +
                 String("</tr>") +
 		        String("<tr>") +
-                    String("<td>") + String("Publish topic")  + String("</td>") +
-                    String("<td>") + _tMG.mqttTopicPublish() + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("Subscription topic")  + String("</td>") +
-                    String("<td>") + _tMG.mqttTopicSubscribe() + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
                     String("<td>") + String("Username")  + String("</td>") +
                     String("<td>") + _tMG.mqttUsername() + String("</td>") +
                 String("</tr>") +
 		        String("<tr>") +
                     String("<td>") + String("Password")  + String("</td>") +
                     String("<td>") + _tMG.mqttPassword() + String("</td>") +
+                String("</tr>") +
+		        String("<tr>") +
+                    String("<td colspan=2>") + String("Published topics")  + String("</td>") +
+                String("</tr>") +
+		        String("<tr>") +
+                    String("<td>") + String("Distance to target in centimeters/millimeters. Range: 0 - 1200")  + String("</td>") +
+                    String("<td>") + String("iot/hen_house/hatch/lidar/distanceToObjectCm") + String("</td>") +
+                String("</tr>") +
+		        String("<tr>") +
+                    String("<td>") + String("Strength quality of returned signal in arbitrary units. Range: -1, 0 - 32767")  + String("</td>") +
+                    String("<td>") + String("iot/hen_house/hatch/lidar/strengthOrQualityOfReturnSignal") + String("</td>") +
+                String("</tr>") +
+		        String("<tr>") +
+                    String("<td>") + String("Temperature of LIDAR sensor chip, range: -25 &deg;C to 125 &deg;C")  + String("</td>") +
+                    String("<td>") + String("iot/hen_house/hatch/lidar/temperatureInternalOfLidarSensorChipCelsius") + String("</td>") +
                 String("</tr>") +
 	        String("</tbody>") +
         String("</table>");

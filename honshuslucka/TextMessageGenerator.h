@@ -16,13 +16,11 @@ class TextMessageGenerator
 		int _mqttPort;
 		String _mqttUsername;
 		String _mqttPassword;
-		String _mqttTopicSubscribe;
-		String _mqttTopicPublish;
 
 		const String HEADER_UNDERLINE = String("====================================\n");
 
 	public:
-		TextMessageGenerator(String firmwareVersion, int serialMonitorBaud, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe, String mqttTopicPublish);
+		TextMessageGenerator(String firmwareVersion, int serialMonitorBaud, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword);
 
 		void initialize();
 
@@ -35,8 +33,6 @@ class TextMessageGenerator
 		String mqttPort();
 		String mqttUsername();
 		String mqttPassword();
-		String mqttTopicSubscribe();
-		String mqttTopicPublish();
 
 
 		String deviceInfo();
@@ -46,7 +42,7 @@ class TextMessageGenerator
 		String wifiCredentialsJSONParsingError(String error);
 
 		String connectingToMQTTServer(String clientId);
-		String mQTTServerConnectionEstablished();
+		String mQTTServerConnectionEstablished(String assignedIP);
 		String mQTTServerConnectionFailed(int state);
 		String messageArrived(char* topic, byte* payload, unsigned int length);
 

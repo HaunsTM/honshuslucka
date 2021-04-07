@@ -16,7 +16,6 @@ private:
     int _mqttPort;
     String _mqttUsername;
     String _mqttPassword;
-    String _mqttTopicSubscribe;
 
     bool _initialized;
 
@@ -25,7 +24,7 @@ private:
     TextMessageGenerator& _tMG;
     String baseReportHen_HouseHatchTopic();
 public:
-    MQTTCommunicator(PubSubClient& pubSubClient, ActuatorAction& m, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe);
+    MQTTCommunicator(PubSubClient& pubSubClient, ActuatorAction& m, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword);
     
     ~MQTTCommunicator();
 
