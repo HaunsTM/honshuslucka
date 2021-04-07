@@ -6,10 +6,11 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-HTTPWebServer::HTTPWebServer(HatchRequest& hatchRequest, ESP8266WebServer& server, TextMessageGenerator& tMG)
+HTTPWebServer::HTTPWebServer(HatchRequest& hatchRequest, ESP8266WebServer& server, TextMessageGenerator& tMG, DistanceMeterData& currentMeterData)
     :   _hatchRequest(hatchRequest),
         _server(server),
-        _tMG(tMG)
+        _tMG(tMG),
+        _currentMeterData(currentMeterData)
 {
     _initialized = false;
 }
@@ -49,6 +50,8 @@ void HTTPWebServer::setUpRouteHandlers() {
     _server.on("/pushActuator", [this]() { routeGetPushActuator(); });
     _server.on("/stopActuator", [this]() { routeGetStopActuator(); });
     _server.on("/pullActuator", [this]() { routeGetPullActuator(); });
+
+    _server.on("/lidarSensorData", [this]() { routeGetLidarSensorData(); });
 
     _server.onNotFound([this]() { routeGetNotFound(); });
 }
@@ -347,6 +350,24 @@ void HTTPWebServer::routeGetInfo() {
                 String("</tr>") +
 	        String("</tbody>") +
         String("</table>") +
+        
+        String("<table>") +
+	        String("<thead>") +
+		        String("<tr>") +
+			        String("<th colspan=2>Other requests</th>") +
+		        String("</tr>") +
+		        String("<tr>") +
+			        String("<th>Action</th>") +
+                    String("<th>Request (<code>GET</code>)</th>") +
+		        String("</tr>") +
+	        String("</thead>") +
+	        String("<tbody>") +
+		        String("<tr>") +
+                    String("<td>") + String("Get current read measurement from LIDAR detector in a JSON: <code>{\"distanceToObjectCm\":\"xxx\",\"strengthOrQualityOfReturnSignal\":\"yyy\",\"temperatureInternalOfLidarSensorChipCelsius\":\"zzz\"}</code>")  + String("</td>") +
+                    String("<td>") + String("<a href=\"//") + localIP + String("/lidarSensorData\">//") + localIP + String("/lidarSensorData</a>") + String("</td>") +
+                String("</tr>") +
+	        String("</tbody>") +
+        String("</table>") +
 
         String("<table>") +
 	        String("<thead>") +
@@ -414,6 +435,17 @@ void HTTPWebServer::routeGetPullActuator() {
     _hatchRequest.setAction(HatchRequestAction::UP);
     _hatchRequest.setAcknowledged(false);
     _server.send(200, "text/plain", "Contracting actuator...");
+}
+
+void HTTPWebServer::routeGetLidarSensorData() {
+
+    String lidarSensorData = 
+        String("{") +
+            String("\"distanceToObjectCm\":") + String(_currentMeterData.distanceToObjectCm)  + String(",") +
+            String("\"strengthOrQualityOfReturnSignal\":") + String(_currentMeterData.strengthOrQualityOfReturnSignal)  + String(",") +
+            String("\"temperatureInternalOfLidarSensorChipCelsius\":") + String(_currentMeterData.temperatureInternalOfLidarSensorChipCelsius)   +
+        String("}");
+    _server.send(200, "application/json", lidarSensorData.c_str());
 }
 
 void HTTPWebServer::routeGetNotFound() {

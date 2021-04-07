@@ -62,7 +62,7 @@ SwitchesManager switchesManager(hatchRequests[0], actuatorPullButton, actuatorPu
 
 WifiManager wifiManager( tMG, CREDENTIALS_JSON_STRING);
 
-HTTPWebServer webserver(hatchRequests[1], eSP8266WebServer, tMG);
+HTTPWebServer webserver(hatchRequests[1], eSP8266WebServer, tMG, currentMeterData);
 
 ActuatorAction m;
 MQTTCommunicator mQTTC(
