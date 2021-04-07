@@ -1,8 +1,9 @@
-#include <string>
+
 
 #include "ActuatorAction.h"
-#include "TextMessageGenerator.h"
+#include "DistanceMeterData.h"
 #include <PubSubClient.h>
+#include "TextMessageGenerator.h"
 
 #ifndef MQTT_COMMUNICATOR_H
 #define MQTT_COMMUNICATOR_H
@@ -22,6 +23,7 @@ private:
     ActuatorAction& _m;
     PubSubClient& _pubSubClient;
     TextMessageGenerator& _tMG;
+    String baseReportHen_HouseHatchTopic();
 public:
     MQTTCommunicator(PubSubClient& pubSubClient, ActuatorAction& m, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttTopicSubscribe);
     
@@ -36,6 +38,8 @@ public:
     void mqttReceived(char* topic, byte* payload, unsigned int length);
 
     void connectToMQTTBroker();
+
+    void reportHen_HouseHatchLidar(DistanceMeterData& currentMeterData);
 
 };
 

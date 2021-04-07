@@ -4,7 +4,7 @@
 struct DistanceMeterData {
     int16_t distanceToObjectCm = 0;
     int16_t strengthOrQualityOfReturnSignal = 0;
-    int16_t temperatureInternalOfLidarSensorChip = 0;
+    int16_t temperatureInternalOfLidarSensorChipCelsius = 0;
     String errorAndHexData = "";
 };
 

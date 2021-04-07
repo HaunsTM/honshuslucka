@@ -327,23 +327,23 @@ void HTTPWebServer::routeGetInfo() {
 	        String("<tbody>") +
 		        String("<tr>") +
                     String("<td>") + String("Close hatch")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/actuatorCloseHatch\">//") + localIP + String("/actuatorCloseHatch</a>") + String("</td>") +
+                    String("<td>") + String("<a href=\"//") + localIP + String("/closeHatch\">//") + localIP + String("/closeHatch</a>") + String("</td>") +
                 String("</tr>") +
 		        String("<tr>") +
                     String("<td>") + String("Open hatch")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/actuatorOpenHatch\">//") + localIP + String("/actuatorOpenHatch</a>") + String("</td>") +
+                    String("<td>") + String("<a href=\"//") + localIP + String("/openHatch\">//") + localIP + String("/openHatch</a>") + String("</td>") +
                 String("</tr>") +
 		        String("<tr>") +
                     String("<td>") + String("Contracting actuator piston")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/actuatorPull\">//") + localIP + String("/actuatorPull</a>") + String("</td>") +
+                    String("<td>") + String("<a href=\"//") + localIP + String("/pullActuator\">//") + localIP + String("/pullActuator</a>") + String("</td>") +
                 String("</tr>") +
 		        String("<tr>") +
                     String("<td>") + String("Stop actuator engine")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/actuatorTurnOff\">//") + localIP + String("/actuatorTurnOff</a>") + String("</td>") +
+                    String("<td>") + String("<a href=\"//") + localIP + String("/stopActuator\">//") + localIP + String("/stopActuator</a>") + String("</td>") +
                 String("</tr>") +
 		        String("<tr>") +
                     String("<td>") + String("Extends actuator piston")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/actuatorPush\">//") + localIP + String("/actuatorPush</a>") + String("</td>") +
+                    String("<td>") + String("<a href=\"//") + localIP + String("/pushActuator\">//") + localIP + String("/pushActuator</a>") + String("</td>") +
                 String("</tr>") +
 	        String("</tbody>") +
         String("</table>") +

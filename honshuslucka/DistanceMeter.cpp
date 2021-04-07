@@ -33,13 +33,13 @@ void DistanceMeter::handleDistanceMeter() {
     unsigned int loopDelay = 50;// Loop delay to match the 20Hz data frame rate
 
     if (millis() - _lastReadMs > loopDelay) {
-        _tfmP.getData(_currentMeterData.distanceToObjectCm, _currentMeterData.strengthOrQualityOfReturnSignal, _currentMeterData.temperatureInternalOfLidarSensorChip);
+        _tfmP.getData(_currentMeterData.distanceToObjectCm, _currentMeterData.strengthOrQualityOfReturnSignal, _currentMeterData.temperatureInternalOfLidarSensorChipCelsius);
 
         _lastReadMs = millis();
     }
     else if (millis() < _lastReadMs) {
 
-        _tfmP.getData(_currentMeterData.distanceToObjectCm, _currentMeterData.strengthOrQualityOfReturnSignal, _currentMeterData.temperatureInternalOfLidarSensorChip);
+        _tfmP.getData(_currentMeterData.distanceToObjectCm, _currentMeterData.strengthOrQualityOfReturnSignal, _currentMeterData.temperatureInternalOfLidarSensorChipCelsius);
 
         _lastReadMs = millis();
     }

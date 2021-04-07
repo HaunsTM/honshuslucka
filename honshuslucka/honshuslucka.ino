@@ -276,21 +276,9 @@ void indicateMoving() {
         actualHatchLocomotion = HatchLocomotion::NO_CHANGE;
     }
     if (actualHatchLocomotion != previousHatchLocomotion) {
-        switch (actualHatchLocomotion) {
-            case HatchLocomotion::UP:
-                Serial.print("UP - ");
-                break;
-            case HatchLocomotion::DOWN:
-                Serial.print("DOWN - ");
-                break;
-            case HatchLocomotion::NO_CHANGE:
-                Serial.print("NO_CHANGE - ");
-                break;
-        };
-        Serial.print(currentMeterData.distanceToObjectCm);
-        Serial.println(" cm");
 
-    }
+        mQTTC.reportHen_HouseHatchLidar(currentMeterData); 
+    }   
     actualHatchLocomotion = previousHatchLocomotion;
 };
 
