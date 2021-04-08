@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.2"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="87.100006"
+   height="72.698997"
+   viewBox="0 0 87.100005 72.698997"
+   xml:space="preserve"
+   sodipodi:docname="tfMiniPlus_schematic.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"><metadata
+   id="metadata3413"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs3411">
+	
+	
+		
+	
+	
+	
+		
+	
+	
+	
+	
+		
+	
+	
+	
+		
+	
+	
+	
+</defs><sodipodi:namedview
+   fit-margin-bottom="0"
+   fit-margin-right="0"
+   fit-margin-left="0"
+   fit-margin-top="0"
+   inkscape:document-rotation="0"
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1920"
+   inkscape:window-height="1137"
+   id="namedview3409"
+   showgrid="false"
+   inkscape:zoom="10.208333"
+   inkscape:cx="46.390817"
+   inkscape:cy="35.076531"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+<rect
+   id="rect3374"
+   height="42.299999"
+   width="56.696999"
+   stroke-linecap="round"
+   stroke="#000000"
+   fill="#ffffff"
+   y="15.200001"
+   x="15.200001" /><line
+   y2="29.15"
+   x2="86.400009"
+   y1="29.15"
+   x1="72.000008"
+   stroke-linecap="round"
+   stroke-width="0.75"
+   stroke="#787878"
+   fill="none"
+   id="connectorTX" /><text
+   y="29.85"
+   x="63.272598"
+   id="text3377"
+   font-size="3.5px"
+   font-family="DroidSans"
+   fill="#8c8c8c">TX</text><rect
+   height="0.69999999"
+   width="0.69999999"
+   fill="none"
+   y="28.800001"
+   x="86.400009"
+   id="connector10terminal" /><line
+   y2="29.15"
+   x2="15.1"
+   y1="29.15"
+   x1="0.70000005"
+   stroke-linecap="round"
+   stroke-width="0.75"
+   stroke="#787878"
+   fill="none"
+   id="connectorRX" /><rect
+   height="1.05"
+   width="1.883"
+   fill="none"
+   y="28.800001"
+   x="0"
+   id="connector0terminal" /><text
+   y="29.85"
+   x="16.499201"
+   id="text3382"
+   font-size="3.5px"
+   font-family="DroidSans"
+   fill="#8c8c8c">RX</text><rect
+   height="0.69999999"
+   width="0.69999999"
+   fill="none"
+   y="28.800001"
+   x="0"
+   id="connector9terminal" /><line
+   y2="72"
+   x2="43.549999"
+   y1="57.599998"
+   x1="43.549999"
+   stroke-linecap="round"
+   stroke-width="0.75"
+   stroke="#787878"
+   fill="none"
+   id="connectorGND" /><g
+   id="g3390"
+   transform="translate(15.8369,20.0526)">
+		<g
+   id="g3388"
+   transform="rotate(-90)">
+			<text
+   id="text3386"
+   font-size="3.5px"
+   font-family="DroidSans"
+   fill="#8c8c8c"
+   transform="translate(-36.147,28.4123)">GND</text>
+		</g>
+	</g><rect
+   height="0.699"
+   width="0.69700003"
+   fill="none"
+   y="72"
+   x="43.199997"
+   id="connector12terminal" /><line
+   y2="15.1"
+   x2="43.549999"
+   y1="0.69999993"
+   x1="43.549999"
+   stroke-linecap="round"
+   stroke-width="0.75"
+   stroke="#787878"
+   fill="none"
+   id="connector5V" /><g
+   id="g3402"
+   transform="translate(15.8369,6.04736)">
+		<g
+   id="g3400"
+   transform="rotate(-90)">
+			<text
+   id="text3394"
+   font-size="3.5px"
+   font-family="DroidSans"
+   fill="#8c8c8c"
+   transform="translate(-16.5214,28.4123)">5V</text>
+			<text
+   id="text3396"
+   font-size="3.5px"
+   font-family="DroidSans"
+   fill="#8c8c8c"
+   transform="translate(-14.6034,28.4123)" />
+			<text
+   id="text3398"
+   font-size="3.5px"
+   font-family="DroidSans"
+   fill="#8c8c8c"
+   transform="translate(-12.5624,28.4123)" />
+		</g>
+	</g><rect
+   height="0.69999999"
+   width="0.69700003"
+   fill="none"
+   y="0"
+   x="43.199997"
+   id="connector13terminal" /><text
+   y="37.932335"
+   x="31.729225"
+   id="text3405"
+   font-size="4.25px"
+   font-family="DroidSans">TFMini Plus</text>
+</svg>

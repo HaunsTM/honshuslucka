@@ -19,7 +19,7 @@
 #include <TFMPlus.h>  // Include TFMini Plus Library v1.4.1
 
 TFMPlus tfmP;         // Create a TFMini Plus object  
-SoftwareSerial mySerial(PIN_D2_GPIO4_SDA,PIN_D1_GPIO5_SCL); //define software serial port name as mySerial and define D5 as RX and D0 as TX
+SoftwareSerial mySerial(PIN_D2_GPIO4_SDA, PIN_D1_GPIO5_SCL); //define software serial port name as mySerial and define D5 as RX and D0 as TX
 DistanceMeterData currentMeterData;
 DistanceMeterData previousMeterData;
 DistanceMeter distanceMeter(mySerial, currentMeterData);
