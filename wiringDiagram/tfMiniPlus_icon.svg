@@ -29,7 +29,7 @@
      inkscape:window-width="1920"
      showgrid="false"
      inkscape:document-rotation="0"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer3"
      inkscape:document-units="mm"
      inkscape:cy="64.944927"
      inkscape:cx="56.849615"
@@ -72,12 +72,19 @@
      id="layer3"
      inkscape:groupmode="layer">
     <rect
-       y="128.83499"
-       x="101.69406"
-       height="15.494004"
-       width="9.1706066"
+       y="137.15303"
+       x="101.69344"
+       height="7.0830421"
+       width="9.1718493"
        id="rect974"
-       style="fill:#999999;fill-rule:evenodd;stroke:#999999;stroke-width:0.426326;stroke-linecap:square;stroke-dasharray:0.426326, 0.42632599999999998;stroke-opacity:1" />
+       style="fill:#999999;fill-rule:evenodd;stroke:#999999;stroke-width:0.28827;stroke-linecap:square;stroke-dasharray:0.28827, 0.28827;stroke-opacity:1" />
+    <rect
+       y="124.53802"
+       x="101.82566"
+       height="11.629983"
+       width="9.164608"
+       id="rect974-4"
+       style="fill:#e6e6e6;fill-rule:evenodd;stroke:#e6e6e6;stroke-width:0.369239;stroke-linecap:square;stroke-dasharray:0.369239, 0.36923899999999998;stroke-opacity:1;opacity:0.7" />
   </g>
   <g
      transform="translate(-87.558777,-117.0082)"
@@ -94,27 +101,27 @@
            height="5.953125"
            width="0.71437502"
            id="rect4104-0-4-5"
-           style="fill:#000000;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:#000000;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;" />
         <rect
            y="136.62526"
            x="109.23733"
            height="1.2160764"
            width="1.2160764"
            id="rect3849-4-9-7"
-           style="fill:#bbc0a5;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:#bbc0a5;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;" />
         <text
            transform="rotate(-90)"
            id="text3053"
            y="110.16369"
            x="-136.37274"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:1.05833px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:1.76388889px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;"
            xml:space="preserve"><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';fill:#000000;stroke-width:0.264583"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:OcrA;-inkscape-font-specification:'OcrA Bold';fill:#000000;stroke-width:0.264583;font-size:1.76388889px;"
              id="tspan3055"
              y="110.16369"
              x="-136.37274"><tspan
                id="tspan3057"
-               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';fill:#000000;stroke-width:0.264583"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:OcrA;-inkscape-font-specification:'OcrA Bold';fill:#000000;stroke-width:0.264583;font-size:1.76388889px;"
                y="110.16369"
                x="-136.37274">GND (black)</tspan></tspan></text>
       </g>
@@ -126,36 +133,32 @@
            height="5.953125"
            width="0.71437502"
            id="rect4104"
-           style="fill:#00ff00;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:#00ff00;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;" />
         <rect
            y="136.62526"
            x="102.10451"
            height="1.2160764"
            width="1.2160764"
            id="rect3849"
-           style="fill:#bbc0a5;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:#bbc0a5;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;" />
         <text
            transform="rotate(-90)"
            id="text3071"
            y="102.96317"
            x="-136.32158"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:1.05833px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:1.76388889px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;"
            xml:space="preserve"><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';fill:#000000;stroke-width:0.264583"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:OcrA;-inkscape-font-specification:'OcrA Bold';fill:#000000;stroke-width:0.264583;font-size:1.76388889px;"
              id="tspan3073"
              y="102.96317"
-             x="-136.32158">TX (green)<tspan
-   id="tspan3075"
-   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';fill:#000000;stroke-width:0.264583"
-   y="102.96317"
-   x="-136.32158" /></tspan></text>
+             x="-136.32158">TX (green)</tspan></text>
         <ellipse
            ry="0.50781214"
            rx="0.47440341"
            cy="143.84923"
            cx="102.71457"
            id="connectorTX"
-           style="fill:#cccccc;fill-rule:evenodd;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-dasharray:0.2, 0.2;stroke-opacity:1" />
+           style="fill:#cccccc;fill-rule:evenodd;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-dasharray:0.2, 0.20000000000000001;stroke-opacity:1;" />
       </g>
       <g
          id="g871">
@@ -165,31 +168,27 @@
            height="5.953125"
            width="0.71437502"
            id="rect4104-0"
-           style="fill:#ffffff;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:#ffffff;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;" />
         <rect
            y="136.62526"
            x="104.4587"
            height="1.2160764"
            width="1.2160764"
            id="rect3849-4"
-           style="fill:#bbc0a5;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:#bbc0a5;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;" />
         <text
            transform="rotate(-90)"
            id="text3065"
            y="105.38506"
            x="-136.34483"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:1.05833px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:1.76388889px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;"
            xml:space="preserve"><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';fill:#000000;stroke-width:0.264583"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:OcrA;-inkscape-font-specification:'OcrA Bold';fill:#000000;stroke-width:0.264583;font-size:1.76388889px;"
              id="tspan3067"
              y="105.38506"
-             x="-136.34483">RX (white)<tspan
-   id="tspan3069"
-   style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';fill:#000000;stroke-width:0.264583"
-   y="105.38506"
-   x="-136.34483" /></tspan></text>
+             x="-136.34483">RX (white)</tspan></text>
         <ellipse
-           style="fill:#cccccc;fill-rule:evenodd;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-dasharray:0.2, 0.2;stroke-opacity:1"
+           style="fill:#cccccc;fill-rule:evenodd;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-dasharray:0.2, 0.20000000000000001;stroke-opacity:1;"
            id="path1048-2"
            cx="105.06876"
            cy="143.84923"
@@ -204,27 +203,27 @@
            height="5.953125"
            width="0.71437502"
            id="rect4104-0-4"
-           style="fill:#ff0000;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:#ff0000;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;" />
         <rect
            y="136.62526"
            x="106.88312"
            height="1.2160764"
            width="1.2160764"
            id="rect3849-4-9"
-           style="fill:#bbc0a5;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" />
+           style="fill:#bbc0a5;fill-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none;" />
         <text
            transform="rotate(-90)"
            id="text3059"
            y="107.80948"
            x="-136.39909"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:1.05833px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:1.76388889px;line-height:125%;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;"
            xml:space="preserve"><tspan
-             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Droid Sans';-inkscape-font-specification:'Droid Sans Bold';fill:#000000;stroke-width:0.264583"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:OcrA;-inkscape-font-specification:'OcrA Bold';fill:#000000;stroke-width:0.264583;font-size:1.76388889px;"
              id="tspan3061"
              y="107.80948"
              x="-136.39909">5 V (red)</tspan></text>
         <ellipse
-           style="fill:#cccccc;fill-rule:evenodd;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-dasharray:0.2, 0.2;stroke-opacity:1"
+           style="fill:#cccccc;fill-rule:evenodd;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-dasharray:0.2, 0.20000000000000001;stroke-opacity:1;"
            id="connector5V"
            cx="107.49318"
            cy="143.84923"
@@ -233,7 +232,7 @@
       </g>
     </g>
     <ellipse
-       style="fill:#cccccc;fill-rule:evenodd;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-dasharray:0.2, 0.20000000000000001;stroke-opacity:1"
+       style="fill:#cccccc;fill-rule:evenodd;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-dasharray:0.2, 0.20000000000000001;stroke-opacity:1;"
        id="connectorGND"
        cx="109.82677"
        cy="143.84923"
