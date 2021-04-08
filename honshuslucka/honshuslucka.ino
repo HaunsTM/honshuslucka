@@ -1,22 +1,25 @@
+
+
+
+#include <Arduino.h>
 #include "Actuator.h"
 #include "ActuatorAction.h"
 #include "Blinker.h"
 #include "DistanceMeter.h"
+#include <ESP8266WiFi.h>
 #include "HTTPWebServer.h"
 #include "HatchRequest.h"
 #include "MQTTCommunicator.h"
 #include "OnboardLED.h"
 #include "Pins.h"
+#include <PubSubClient.h>
 #include "SettingsData.h"
+#include <SoftwareSerial.h>
 #include "Switch.h"
 #include "SwitchesManager.h"
 #include "TextMessageGenerator.h"
-#include "WifiManager.h"
-#include <Arduino.h>
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-#include <SoftwareSerial.h>
 #include <TFMPlus.h>  // Include TFMini Plus Library v1.4.1
+#include "WifiManager.h"
 
 TFMPlus tfmP;         // Create a TFMini Plus object  
 SoftwareSerial mySerial(PIN_D2_GPIO4_SDA, PIN_D1_GPIO5_SCL); //define software serial port name as mySerial and define D5 as RX and D0 as TX
@@ -39,7 +42,7 @@ Blinker blinker(onboardLED);
 Actuator actuator(PIN_D6_GPIO12_MISO, PIN_D7_GPIO13_MOSI);
 
 Switch actuatorPullButton(PIN_D3_GPIO0_FLASH, true);
-Switch actuatorPushButton(PIN_D4_GPIO2, true);
+Switch actuatorPushButton(PIN_D5_GPIO14_SCLK, true);
 
 TextMessageGenerator tMG(
     SETTINGS_DATA_FIRMWARE_VERSION, SETTINGS_DATA_SERIAL_MONITOR_BAUD,

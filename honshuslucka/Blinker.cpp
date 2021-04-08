@@ -2,7 +2,7 @@
 #include "Blinker.h"
 #include "OnboardLED.h"
 #include "StateAndDuration.h"
-#include <Vector.h>
+#include "Vector.h"
 
 Blinker::Blinker(OnboardLED& onboardLED) {
     _onboardLED = onboardLED;

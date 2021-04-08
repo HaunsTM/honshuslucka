@@ -38,9 +38,10 @@ String TextMessageGenerator::wifiConnectionEstablished(String SSID, String assig
         String("Established connection to wifi\n") +
         HEADER_UNDERLINE +
         String("Wifi SSID: ") + SSID + String("\n") +
-        String("Assigned IP: ") + assignedIP + String("\n\n\n") +
-        String("GUI controls: //") + assignedIP +
-        String("Available endpoints list: //") + assignedIP + String("/info");
+        String("Assigned IP: ") + assignedIP + String("\n") +
+        String("GUI controls: //") + assignedIP + String("\n") +
+        String("Available endpoints list: //") + assignedIP + String("/info")  +
+        String("\n\n\n");
     return message;
 };
 

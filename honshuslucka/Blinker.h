@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "OnboardLED.h"
 #include "StateAndDuration.h"
-#include <Vector.h>
+#include "Vector.h"
 
 #ifndef BLINKER_H
 #define BLINKER_H
