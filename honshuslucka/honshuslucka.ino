@@ -80,9 +80,10 @@ enum class ChickenHatchStates {
 }; 
 
 ChickenHatchStates state;
-HatchRequestAction currentHighestPrioritizedHatchRequest;
+HatchRequestAction currentHighestPrioritizedHatchRequestAction;
 ActuatorAction currentActuatorActionToPerform;
-unsigned long hatchStopChrono;
+unsigned long hatchMovementStarted;
+unsigned long hatchPauseChrono;
 
 void setup() {
     Serial.begin(SETTINGS_DATA_SERIAL_MONITOR_BAUD); // initialize serial monitor with 115200 baud
@@ -167,6 +168,19 @@ bool stopRequested() {
     return false;
 }
 
+bool maxHatchMovementTimeReached() {
+
+    unsigned long currentTimeMs = millis();
+
+    if (currentTimeMs < hatchMovementStarted) {
+        // special case - we have rounded max time
+        return true;
+    }
+    
+    const bool maxTimeReached = currentTimeMs > (hatchMovementStarted + MAX_REQUIRED_TIME_TO_PERFORM_A_HATCH_OPEN_PROCESS_MS);
+    return maxTimeReached;
+}
+
 ActuatorAction acknowledgeAllCurrentHacthRequests() {
 
     hatchRequests[0].setAcknowledged(true);
@@ -228,10 +242,11 @@ void ChickenHatchStateMachine() {
             }
                       
             else if (requestsForOtherLevel()) {
-                currentHighestPrioritizedHatchRequest = getPrioritizedHatchRequestAction();
+                currentHighestPrioritizedHatchRequestAction = getPrioritizedHatchRequestAction();
                 acknowledgeAllCurrentHacthRequests();
 
-                currentActuatorActionToPerform = hatchAction2ActuatorAction(currentHighestPrioritizedHatchRequest);
+                currentActuatorActionToPerform = hatchAction2ActuatorAction(currentHighestPrioritizedHatchRequestAction);
+                hatchMovementStarted = millis();
                 state = ChickenHatchStates::MOVE;
             }
             break;
@@ -244,6 +259,12 @@ void ChickenHatchStateMachine() {
 
                 state = ChickenHatchStates::STOP;
             }
+            
+            if (maxHatchMovementTimeReached()) {
+                acknowledgeAllCurrentHacthRequests();
+
+                state = ChickenHatchStates::STOP;
+            }
 
             break;
 
@@ -252,13 +273,15 @@ void ChickenHatchStateMachine() {
             currentActuatorActionToPerform = ActuatorAction::TURN_OFF;
 
             state = ChickenHatchStates::WAIT_1_S;
-            hatchStopChrono = millis();
+
+            hatchMovementStarted = 0;
+            hatchPauseChrono = millis();
 
             break;
         
         case ChickenHatchStates::WAIT_1_S:
 
-            if (millis() - hatchStopChrono > 1000) {
+            if (millis() - hatchPauseChrono > 1000) {
                 state = ChickenHatchStates::STAND_BY;
             }
 
