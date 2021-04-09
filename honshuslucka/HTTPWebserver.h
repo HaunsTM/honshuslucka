@@ -19,6 +19,7 @@ private:
     TextMessageGenerator& _tMG;
     DistanceMeterData& _currentMeterData;
 
+    String baseMQTTHen_HouseHatchTopic();
     String htmlEnveloper(String title, String bodyContent);
 
     String javascriptAddActuatorControlButtonEventListeners();

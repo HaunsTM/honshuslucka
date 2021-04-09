@@ -70,6 +70,7 @@ String HTTPWebServer::htmlEnveloper(String title, String bodyContent) {
                     String("table {width: 70vw; font-family: 'Courier New', monospace; padding: 1rem 0;}") +
                     String("table thead tr:first-child th {font-weight: bold; background-color: LightGrey;}") +
                     String("table thead tr:last-child th {border-bottom: 1px solid LightGrey;}") +
+                    String(".table-sub-head { text-align:center; background-color: LightGrey;}") +
                     String("td a { font-size: 0.8rem;}") +
                     String(".button-symbol {width: 3rem; height: 3rem; font-size: 2rem; font-weight: bold;}") +
                     String(".button-success {background-color: LightGreen;}") +
@@ -268,6 +269,10 @@ void HTTPWebServer::routeGetControl() {
     _server.send(200, "text/html", html);
 }
 
+String HTTPWebServer::baseMQTTHen_HouseHatchTopic() {
+    return "<code>iot/hen_house/hatch/</code>";
+};
+
 void HTTPWebServer::routeGetInfo() {
     const String localIP = WiFi.localIP().toString();
     const String htmlBodyContent =
@@ -393,19 +398,33 @@ void HTTPWebServer::routeGetInfo() {
                     String("<td>") + _tMG.mqttPassword() + String("</td>") +
                 String("</tr>") +
 		        String("<tr>") +
-                    String("<td colspan=2>") + String("Published topics")  + String("</td>") +
+                    String("<td class=\"table-sub-head\" colspan=2>") + String("Published topics")  + String("</td>") +
                 String("</tr>") +
 		        String("<tr>") +
-                    String("<td>") + String("Distance to target in centimeters/millimeters. Range: 0 - 1200")  + String("</td>") +
-                    String("<td>") + String("iot/hen_house/hatch/lidar/distanceToObjectCm") + String("</td>") +
+                    String("<td class=\"table-sub-head\" colspan=2>") + String("Actuator")  + String("</td>") +
                 String("</tr>") +
 		        String("<tr>") +
-                    String("<td>") + String("Strength quality of returned signal in arbitrary units. Range: -1, 0 - 32767")  + String("</td>") +
-                    String("<td>") + String("iot/hen_house/hatch/lidar/strengthOrQualityOfReturnSignal") + String("</td>") +
+                    String("<td>") + baseMQTTHen_HouseHatchTopic() + String("<code>actuator/action</code>") + String("</td>") +
+                    String("<td>") + String("Distance to target in centimeters/millimeters. Range: <code>0 - 1200</code>")  + String("</td>") +
+                String("</tr>") +
+
+
+
+
+		        String("<tr>") +
+                    String("<td class=\"table-sub-head\" colspan=2>") + String("Laser distance sensor meter value (LIDAR)")  + String("</td>") +
                 String("</tr>") +
 		        String("<tr>") +
-                    String("<td>") + String("Temperature of LIDAR sensor chip, range: -25 &deg;C to 125 &deg;C")  + String("</td>") +
-                    String("<td>") + String("iot/hen_house/hatch/lidar/temperatureInternalOfLidarSensorChipCelsius") + String("</td>") +
+                    String("<td>") + baseMQTTHen_HouseHatchTopic() + String("<code>lidar/distanceToObjectCm</code>") + String("</td>") +
+                    String("<td>") + String("Distance to target in centimeters/millimeters. Range: <code>0 - 1200</code>")  + String("</td>") +
+                String("</tr>") +
+		        String("<tr>") +
+                    String("<td>") + baseMQTTHen_HouseHatchTopic() + String("<code>lidar/strengthOrQualityOfReturnSignal</code>") + String("</td>") +
+                    String("<td>") + String("Strength quality of returned signal in arbitrary units. Range: <code>-1, 0 - 32767</code>")  + String("</td>") +
+                String("</tr>") +
+		        String("<tr>") +
+                    String("<td>") + baseMQTTHen_HouseHatchTopic() + String("<code>lidar/temperatureInternalOfLidarSensorChipCelsius</code>") + String("</td>") +
+                    String("<td>") + String("Temperature of LIDAR sensor chip, range: <code>-25 &deg;C - 125 &deg;C</code>")  + String("</td>") +
                 String("</tr>") +
 	        String("</tbody>") +
         String("</table>");

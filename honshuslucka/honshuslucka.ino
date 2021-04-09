@@ -66,9 +66,8 @@ WifiManager wifiManager( tMG, CREDENTIALS_JSON_STRING);
 
 HTTPWebServer webserver(hatchRequests[1], eSP8266WebServer, tMG, currentMeterData);
 
-ActuatorAction m;
 MQTTCommunicator mQTTC(
-    pubSubClient, m, tMG,
+    pubSubClient, tMG,
     SETTINGS_DATA_MQTT_BROKER_URL, SETTINGS_DATA_MQTT_PORT,
     SETTINGS_DATA_MQTT_USERNAME, SETTINGS_DATA_MQTT_PASSWORD);
 
@@ -82,6 +81,7 @@ enum class ChickenHatchStates {
 ChickenHatchStates state;
 HatchRequestAction currentHighestPrioritizedHatchRequestAction;
 ActuatorAction currentActuatorActionToPerform;
+ActuatorAction previousActuatorAction;
 unsigned long hatchMovementStarted;
 unsigned long hatchPauseChrono;
 
@@ -99,6 +99,7 @@ void setup() {
     blinker.start();
      
     actuator.initialize();
+    previousActuatorAction = ActuatorAction::TURN_OFF;
     actuatorPullButton.initialize();
     actuatorPushButton.initialize();
 
@@ -176,10 +177,10 @@ bool maxHatchMovementTimeReached() {
         // special case - we have rounded max time
         return true;
     }
-    
+
     const bool maxTimeReached = currentTimeMs > (hatchMovementStarted + MAX_REQUIRED_TIME_TO_PERFORM_A_HATCH_OPEN_PROCESS_MS);
     return maxTimeReached;
-}
+};
 
 ActuatorAction acknowledgeAllCurrentHacthRequests() {
 
@@ -208,7 +209,7 @@ ActuatorAction hatchAction2ActuatorAction(HatchRequestAction hatchAction) {
     return actuatorAction;
 }
 
-void PerformCurrentActuatorAction() {
+void performCurrentActuatorAction() {
 
     switch (currentActuatorActionToPerform) {
 
@@ -226,7 +227,15 @@ void PerformCurrentActuatorAction() {
     }
 }
 
-void ChickenHatchStateMachine() {
+void reportChangesInCurrentActuatorAction() {
+
+    if (currentActuatorActionToPerform != previousActuatorAction) {
+        mQTTC.reportHen_HouseHatchActuatorAction(currentActuatorActionToPerform);
+        previousActuatorAction = currentActuatorActionToPerform;
+    }
+};
+
+void chickenHatchStateMachine() {
 
     switch (state)
     {
@@ -311,7 +320,7 @@ void loop() {
     wifiManager.monitorWiFi();
     webserver.handleClient();
 
-    ChickenHatchStateMachine();
+    chickenHatchStateMachine();
 
     if (wifiManager.isConnectedToWifi()) {
         if (!mQTTC.isConnectedToMQTTBroker()) {
@@ -320,7 +329,8 @@ void loop() {
         pubSubClient.loop();
     }
 
-    PerformCurrentActuatorAction();
+    performCurrentActuatorAction();
+    reportChangesInCurrentActuatorAction();
 
     blinker.handleBlinker();
 

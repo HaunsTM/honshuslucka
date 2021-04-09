@@ -1,13 +1,13 @@
+#include "ActuatorAction.h"
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include "MQTTCommunicator.h"
 #include <PubSubClient.h>
 #include "TextMessageGenerator.h"
 
-MQTTCommunicator::MQTTCommunicator(PubSubClient& pubSubClient, ActuatorAction& m, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword)
+MQTTCommunicator::MQTTCommunicator(PubSubClient& pubSubClient, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword)
     :   
         _pubSubClient(pubSubClient),
-        _m(m),
         _tMG(tMG)
 {
     _mqttBrokerURL = mqttBrokerURL;
@@ -67,15 +67,14 @@ void MQTTCommunicator::connectToMQTTBroker() {
             Serial.print(_tMG.mQTTServerConnectionFailed(_pubSubClient.state()).c_str());
         }
     }
-}
+};
 
+/* Report functions */
 String MQTTCommunicator::baseReportHen_HouseHatchTopic() {
     return "iot/hen_house/hatch/";
-}
+};
 
-
-/* Rerport functions */
-void MQTTCommunicator::reportHen_HouseHatchLidar(DistanceMeterData& currentMeterData) {
+void MQTTCommunicator::reportHen_HouseHatchLidar(DistanceMeterData currentMeterData) {
     String topicLidarDistanceToObjectCm =
         baseReportHen_HouseHatchTopic() + "lidar/distanceToObjectCm";
     String topicLidarStrengthOrQualityOfReturnSignal =
@@ -86,4 +85,25 @@ void MQTTCommunicator::reportHen_HouseHatchLidar(DistanceMeterData& currentMeter
     _pubSubClient.publish(topicLidarDistanceToObjectCm.c_str(), String(currentMeterData.distanceToObjectCm).c_str() );
     _pubSubClient.publish(topicLidarStrengthOrQualityOfReturnSignal.c_str(), String(currentMeterData.strengthOrQualityOfReturnSignal).c_str() );
     _pubSubClient.publish(topicLidartemperatureInternalOfLidarSensorChipCelsius.c_str(), String(currentMeterData.temperatureInternalOfLidarSensorChipCelsius).c_str() );
-}
+};
+
+void MQTTCommunicator::reportHen_HouseHatchActuatorAction(ActuatorAction currentActuatorAction) {
+
+    String topicActuatorAction = baseReportHen_HouseHatchTopic() + "actuator/action";
+
+    String messageActuatorAction;
+
+    switch (currentActuatorAction) {
+        case ActuatorAction::PULL:
+            messageActuatorAction = "PULL";
+            break;
+        case ActuatorAction::TURN_OFF:
+            messageActuatorAction = "TURN_OFF";
+            break;
+        case ActuatorAction::PUSH:
+            messageActuatorAction = "PUSH";
+            break;
+    }
+    
+    _pubSubClient.publish(topicActuatorAction.c_str(), messageActuatorAction.c_str() );
+};
