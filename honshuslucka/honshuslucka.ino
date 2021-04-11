@@ -27,15 +27,6 @@ DistanceMeterData currentMeterData;
 DistanceMeterData previousMeterData;
 DistanceMeter distanceMeter(mySerial, currentMeterData);
 
-enum class HatchLocomotion {
-    UP,
-    NO_CHANGE,
-    DOWN
-};
-
-HatchLocomotion actualHatchLocomotion;
-HatchLocomotion previousHatchLocomotion;
-
 OnboardLED onboardLED;
 Blinker blinker(onboardLED);
 
@@ -90,8 +81,6 @@ void setup() {
     delay(20);
     distanceMeter.initialize();
     delay(500);            // And wait for half a second.
-    actualHatchLocomotion = HatchLocomotion::NO_CHANGE;
-    previousHatchLocomotion = HatchLocomotion::NO_CHANGE;
 
     onboardLED.initialize();
 
@@ -111,6 +100,7 @@ void setup() {
 
     state = ChickenHatchStates::STAND_BY;
 
+    initiateRequestArray();
 }
 
 bool requestsForSameLevel() {
@@ -255,6 +245,7 @@ void chickenHatchStateMachine() {
                 acknowledgeAllCurrentHacthRequests();
 
                 currentActuatorActionToPerform = hatchAction2ActuatorAction(currentHighestPrioritizedHatchRequestAction);
+                
                 hatchMovementStarted = millis();
                 state = ChickenHatchStates::MOVE;
             }
@@ -299,20 +290,12 @@ void chickenHatchStateMachine() {
     }   
 }
 
-void indicateMoving() {
+void reportMoving() {
 
-    if (currentMeterData.distanceToObjectCm > previousMeterData.distanceToObjectCm) {
-        actualHatchLocomotion = HatchLocomotion::DOWN;
-    } else if (currentMeterData.distanceToObjectCm < previousMeterData.distanceToObjectCm) {        
-        actualHatchLocomotion = HatchLocomotion::UP;
-    } else {
-        actualHatchLocomotion = HatchLocomotion::NO_CHANGE;
+    if (currentMeterData.distanceToObjectCm != previousMeterData.distanceToObjectCm) {
+        mQTTC.reportHen_HouseHatchLidar(currentMeterData);
     }
-    if (actualHatchLocomotion != previousHatchLocomotion) {
 
-        mQTTC.reportHen_HouseHatchLidar(currentMeterData); 
-    }   
-    actualHatchLocomotion = previousHatchLocomotion;
 };
 
 void loop() {
@@ -336,5 +319,5 @@ void loop() {
 
     previousMeterData = currentMeterData;
     distanceMeter.handleDistanceMeter();
-    indicateMoving();
+    reportMoving();
 }

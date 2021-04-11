@@ -18,7 +18,7 @@ void SwitchesManager::initialize() {
     if (!_initialized) {
 
         _pullShouldHaveAcknowledgedReset = true;
-        _turnOffShouldHaveAcknowledgedReset = true;
+        _turnOffShouldHaveAcknowledgedReset = false;
         _pushShouldHaveAcknowledgedReset = true;
 
         _hatchRequest.setAction(HatchRequestAction::STOP);
@@ -49,7 +49,6 @@ void SwitchesManager::monitorInteractions() {
     bool actuatorPushButtonIsPressed = _actuatorPushButton.isPressed();
 
     if (actuatorPullButtonIsPressed && newButtonInteractionMayBePerformed()) {
-        
         _hatchRequest.setAction(HatchRequestAction::UP);
 
         if (_pullShouldHaveAcknowledgedReset) {
@@ -63,10 +62,10 @@ void SwitchesManager::monitorInteractions() {
     }
 
     else if (!actuatorPullButtonIsPressed && !actuatorPushButtonIsPressed) {
-        
         _hatchRequest.setAction(HatchRequestAction::STOP);
 
         if (_turnOffShouldHaveAcknowledgedReset && newButtonInteractionMayBePerformed()) {
+        Serial.println(".................................");
             _hatchRequest.setAcknowledged(false);
             _lastAcknowledgementChangedMs = millis();
 
@@ -77,7 +76,6 @@ void SwitchesManager::monitorInteractions() {
     }
 
     else if (actuatorPushButtonIsPressed && newButtonInteractionMayBePerformed()) {
-
         _hatchRequest.setAction(HatchRequestAction::DOWN);
 
         if (_pushShouldHaveAcknowledgedReset) {
