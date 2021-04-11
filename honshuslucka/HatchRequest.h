@@ -1,4 +1,4 @@
-#include <string>
+#include <Arduino.h>
 #include "HatchRequestAction.h"
 
 #ifndef HATCH_REQUEST_H
@@ -7,7 +7,7 @@
 class HatchRequest {
 
 private:
-	std::string _name;
+	String _name;
 
 	bool _acknowledged;
 
@@ -16,9 +16,11 @@ private:
 	bool _initialized;
 
 public:
-	HatchRequest(std::string name);
+	HatchRequest(String name);
 
 	void initialize();
+
+	bool getInitialized();
 
 	bool getAcknowledged();
 	void setAcknowledged(bool value);
@@ -26,7 +28,7 @@ public:
 	HatchRequestAction getAction();
 	void setAction(HatchRequestAction value);
 
-	std::string getName();
+	String getName();
 };
 
 #endif

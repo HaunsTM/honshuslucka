@@ -1,8 +1,8 @@
-#include <string>
+#include <Arduino.h>
 #include "HatchRequestAction.h"
 #include "HatchRequest.h"
 
-HatchRequest::HatchRequest(std::string name) {
+HatchRequest::HatchRequest(String name) {
 
 	_name = name;
 
@@ -19,11 +19,15 @@ void HatchRequest::initialize() {
 	}
 }
 
-std::string HatchRequest::getName() {
+String HatchRequest::getName() {
 	return _name;
 };
 
-bool HatchRequest::getAcknowledged() {
+bool HatchRequest::getInitialized() {    
+	return _initialized;
+};
+
+bool HatchRequest::getAcknowledged() {    
 	return _acknowledged;
 };
 
