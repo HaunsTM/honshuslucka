@@ -4,7 +4,8 @@
 #include "TextMessageGenerator.h"
 
 #include "webpages/axios_js.h"
-#include "webpages/controlsJavascriptParameters.h"
+#include "webpages/controls_html.h"
+#include "webpages/javascriptParameters_js.h"
 #include "webpages/paho_js.h"
 #include "webpages/simple_css.h"
 
@@ -46,7 +47,7 @@ void HTTPWebServer::initialize() {
 
 void HTTPWebServer::setUpRouteHandlers() {
 
-    _server.on("/", [this]() { routeGetControl(); });
+    _server.on("/", [this]() { routeGetControls(); });
 
     _server.on("/info", [this]() { routeGetInfo(); });
     
@@ -227,60 +228,11 @@ String HTTPWebServer::javascriptAddActuatorControlButtonEventListeners() {
     return javascript;
 }
 
-void HTTPWebServer::routeGetControl() {
-    const String localIP = WiFi.localIP().toString();
+void HTTPWebServer::routeGetControls() {
 
-    const String htmlBodyContent =
-        String("<table>") +
-	        String("<thead>") +
-		        String("<tr>") +
-			        String("<th colspan=2>Process</th>") +
-		        String("</tr>") +
-		        String("<tr>") +
-			        String("<th id=\"tdActuatorProcessResult\" class=\"response-result\" colspan=2>-</th>") +
-		        String("</tr>") +
-	        String("</thead>") +
-	        String("<tbody>") +
-		        String("<tr>") +
-                    String("<td>") + String("<button id='btnOpenHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/openHatch\", \"btnOpenHatch\", \"tdActuatorProcessResult\", true)' class=\"button-symbol\">&UpArrowBar;</button>") + String("</td>") +
-                    String("<td>Open hatch</td>") +
-		        String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("<button id='btnCloseHatch' type='button' onclick='callAPIFromButton(\"//") + localIP + String("/closeHatch\", \"btnCloseHatch\", \"tdActuatorProcessResult\", true)' class=\"button-symbol\">&DownArrowBar;</button>") + String("</td>") +
-                    String("<td>Close hatch</td>") +                   
-		        String("</tr>") +
-	        String("</tbody>") +
-        String("</table>") +
-        String("<h3>Movements</h3>") +
-        String("<table>") +
-	        String("<thead>") +
-		        String("<tr>") +
-			        String("<th colspan=2>Movement</th>") +
-		        String("</tr>") +
-		        String("<tr>") +
-			        String("<th id=\"tdActuatorMovementResult\" class=\"response-result\" colspan=2>-</th>") +
-		        String("</tr>") +
-	        String("</thead>") +
-	        String("<tbody>") +
-		        String("<tr>") +
-                    String("<td><button id=\"btnPull\" type=\"button\" class=\"button-symbol\">&#x21e7;</button></td>") +
-                    String("<td>Contracting actuator piston</td>") +
-		        String("</tr>") +
-		        String("<tr>") +
-                    String("<td><button id=\"btnTurnOff\" type=\"button\" class=\"button-symbol\">&#x220E;</button></td>") +
-                    String("<td>Stop actuator engine</td>") +
-		        String("</tr>") +
-		        String("<tr>") +
-                    String("<td><button id=\"btnPush\" type=\"button\" class=\"button-symbol\">&#x21e9;</button></td>") +
-                    String("<td>Extends actuator piston</td>") +
-		        String("</tr>") +
-	        String("</tbody>") +
-        String("</table>");
-
-    const String htmlBodyAndJavascript = htmlBodyContent + javascriptCallAPIFromButton() + javascriptAddActuatorControlButtonEventListeners();
-    String html = htmlEnveloper("Controls - Chicken house hatch", htmlBodyAndJavascript);
+    const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(CONTROLS_HTML) - 1;
+    _server.send_P(200, "text/html", CONTROLS_HTML, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
     
-    _server.send(200, "text/html", html);
 }
 
 String HTTPWebServer::baseMQTTHen_HouseHatchTopic() {
@@ -447,22 +399,22 @@ void HTTPWebServer::routeGetInfo() {
     _server.send(200, "text/html", html);
 }
 
-void HTTPWebServer::routeGetJavascriptAxiosJs() {    
+void HTTPWebServer::routeGetJavascriptAxiosJs() {
     const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(AXIOS_JS) - 1;
     _server.send_P(200, "text/javascript", AXIOS_JS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
 }
 
-void HTTPWebServer::routeGetJavascriptParametersJs() {    
+void HTTPWebServer::routeGetJavascriptParametersJs() {
     const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(JAVASCRIPT_PARAMETERS) - 1;
     _server.send_P(200, "text/javascript", JAVASCRIPT_PARAMETERS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
 }
 
-void HTTPWebServer::routeGetJavascriptPahoJs() {    
+void HTTPWebServer::routeGetJavascriptPahoJs() {
     const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(PAHO_JS) - 1;
     _server.send_P(200, "text/javascript", PAHO_JS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
 }
 
-void HTTPWebServer::routeGetStyleSimpleCss() {    
+void HTTPWebServer::routeGetStyleSimpleCss() {
     const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(SIMPLE_CSS) - 1;
     _server.send_P(200, "text/css", SIMPLE_CSS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
 }

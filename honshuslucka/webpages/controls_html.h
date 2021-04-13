@@ -1,3 +1,9 @@
+
+#ifndef CONTROLS_HTML_H
+#define CONTROLS_HTML_H
+
+
+const char CONTROLS_HTML[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html>
 <head>
@@ -237,3 +243,6 @@
     </script>
 </body>
 </html>
+)=====";
+
+#endif

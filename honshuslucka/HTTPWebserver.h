@@ -33,7 +33,7 @@ private:
     
     void routeGetStyleSimpleCss();
 
-    void routeGetControl();
+    void routeGetControls();
     void routeGetInfo();
     void routeGetNotFound();
 
