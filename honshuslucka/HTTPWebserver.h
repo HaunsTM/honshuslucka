@@ -27,6 +27,12 @@ private:
 
     void setUpRouteHandlers();
 
+    void routeGetJavascriptAxiosJs();
+    void routeGetJavascriptParametersJs();
+    void routeGetJavascriptPahoJs();
+    
+    void routeGetStyleSimpleCss();
+
     void routeGetControl();
     void routeGetInfo();
     void routeGetNotFound();

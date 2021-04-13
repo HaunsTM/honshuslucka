@@ -3,6 +3,11 @@
 #include "HTTPWebServer.h"
 #include "TextMessageGenerator.h"
 
+#include "webpages/axios_js.h"
+#include "webpages/controlsJavascriptParameters.h"
+#include "webpages/paho_js.h"
+#include "webpages/simple_css.h"
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
@@ -42,7 +47,15 @@ void HTTPWebServer::initialize() {
 void HTTPWebServer::setUpRouteHandlers() {
 
     _server.on("/", [this]() { routeGetControl(); });
+
     _server.on("/info", [this]() { routeGetInfo(); });
+    
+    _server.on("/javascriptAxios_js", [this]() { routeGetJavascriptAxiosJs(); });
+    _server.on("/javascriptParameters_js", [this]() { routeGetJavascriptParametersJs(); });
+    _server.on("/javascriptPaho_js", [this]() { routeGetJavascriptPahoJs(); });
+
+    _server.on("/styleSimple_css", [this]() { routeGetStyleSimpleCss(); });
+
 
     _server.on("/openHatch", [this]() { routeGetOpenHatch(); });
     _server.on("/closeHatch", [this]() { routeGetCloseHatch(); });
@@ -266,6 +279,7 @@ void HTTPWebServer::routeGetControl() {
 
     const String htmlBodyAndJavascript = htmlBodyContent + javascriptCallAPIFromButton() + javascriptAddActuatorControlButtonEventListeners();
     String html = htmlEnveloper("Controls - Chicken house hatch", htmlBodyAndJavascript);
+    
     _server.send(200, "text/html", html);
 }
 
@@ -431,6 +445,26 @@ void HTTPWebServer::routeGetInfo() {
 
     String html = htmlEnveloper("Device info - Chicken house hatch", htmlBodyContent);
     _server.send(200, "text/html", html);
+}
+
+void HTTPWebServer::routeGetJavascriptAxiosJs() {    
+    const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(AXIOS_JS) - 1;
+    _server.send_P(200, "text/javascript", AXIOS_JS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
+}
+
+void HTTPWebServer::routeGetJavascriptParametersJs() {    
+    const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(JAVASCRIPT_PARAMETERS) - 1;
+    _server.send_P(200, "text/javascript", JAVASCRIPT_PARAMETERS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
+}
+
+void HTTPWebServer::routeGetJavascriptPahoJs() {    
+    const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(PAHO_JS) - 1;
+    _server.send_P(200, "text/javascript", PAHO_JS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
+}
+
+void HTTPWebServer::routeGetStyleSimpleCss() {    
+    const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(SIMPLE_CSS) - 1;
+    _server.send_P(200, "text/css", SIMPLE_CSS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
 }
 
 void HTTPWebServer::routeGetOpenHatch() {
