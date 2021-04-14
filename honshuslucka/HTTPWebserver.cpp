@@ -5,6 +5,7 @@
 
 #include "webpages/axios_js.h"
 #include "webpages/controls_html.h"
+#include "webpages/info_html.h"
 #include "webpages/javascriptParameters_js.h"
 #include "webpages/paho_js.h"
 #include "webpages/simple_css.h"
@@ -12,12 +13,17 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-HTTPWebServer::HTTPWebServer(HatchRequest& hatchRequest, ESP8266WebServer& server, TextMessageGenerator& tMG, DistanceMeterData& currentMeterData)
+HTTPWebServer::HTTPWebServer(HatchRequest& hatchRequest, ESP8266WebServer& server, TextMessageGenerator& tMG, DistanceMeterData& currentMeterData, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword)
     :   _hatchRequest(hatchRequest),
         _server(server),
         _tMG(tMG),
         _currentMeterData(currentMeterData)
-{
+{    
+    _mqttBrokerURL = mqttBrokerURL;
+    _mqttPort = mqttPort;
+    _mqttUsername = mqttUsername;
+    _mqttPassword = mqttPassword;
+
     _initialized = false;
 }
 
@@ -52,7 +58,7 @@ void HTTPWebServer::setUpRouteHandlers() {
     _server.on("/info", [this]() { routeGetInfo(); });
     
     _server.on("/javascriptAxios_js", [this]() { routeGetJavascriptAxiosJs(); });
-    _server.on("/javascriptParameters_js", [this]() { routeGetJavascriptParametersJs(); });
+    _server.on("/javascriptParameters_js", [this]() { routeGetJavascriptParameters(); });
     _server.on("/javascriptPaho_js", [this]() { routeGetJavascriptPahoJs(); });
 
     _server.on("/styleSimple_css", [this]() { routeGetStyleSimpleCss(); });
@@ -110,124 +116,6 @@ String HTTPWebServer::htmlEnveloper(String title, String bodyContent) {
     return html;
 };
 
-String HTTPWebServer::javascriptCallAPIFromButton() {
-    const String javascript =
-        String("<script>") +
-        
-            String("const Timer = (ms) => {") +
-
-	            String("let id;") +
-	
-	            String("const start = () => new Promise(resolve => {") +
-		            String("if (id === -1) {") +
-			            String("throw new Error('Timer already aborted');") +
-		            String("}") +
-		            String("id = setTimeout(resolve, ms);") +
-	            String("});") +
-	
-	            String("const abort = () => {") +
-		            String("if (id !== -1 || id === undefined) {") +
-			            String("clearTimeout(id);") +
-			            String("id = -1;") +
-		            String("}") +
-	            String("};") +
-	
-	            String("return {") +
-		            String("start, abort") +
-	            String("}") +
-            String("};") +
-
-            String("const callAPIFromButton = async (url, buttonId, responseTextOutputId, timeoutResponseStatusColorOnButton) => {") +
-
-                String("const addPause = Timer(5*1000);") +
-                String("const button = document.getElementById(buttonId);") +
-
-                String("try {") +
-
-                    String("const response = await fetch(`${url}`);") +
-        
-                    String("if (responseTextOutputId && response) {") +
-                        String("const responseTextOutput = document.getElementById(responseTextOutputId);") +
-                        String("const responseText = await response.text();") +
-                        String("responseTextOutput.innerHTML = `<i>${responseText}</i>`;") +
-                    String("}") +
-
-                    String("if (response.status == 200) {") +
-                        String("button.classList.remove(\"button-error\");") +
-                        String("button.classList.add(\"button-success\");") +
-
-                        String("if (timeoutResponseStatusColorOnButton) {") +
-                            String("await addPause.start();") +
-                            String("button.classList.remove(\"button-success\");") +
-                        String("}") +
-
-                    String("} else {") +
-                        String("button.classList.remove(\"button-success\");") +
-                        String("button.classList.add(\"button-error\");") +
-
-                        String("console.error(`error calling api [${url}]: ${response.status}`);") +
-                        String("if (timeoutResponseStatusColorOnButton) {") +
-                            String("await addPause.start();") +
-                            String("button.classList.remove(\"button-error\");") +
-                        String("}") +
-                    String("}") +
-
-                String("} catch (e) {") +
-                    String("button.classList.remove(\"button-success\");") +
-                    String("console.error(`error calling api [${url}]: ${e}`);") +
-                    String("button.classList.add(\"button-error\");") +
-                String("}") +
-
-            String("};") +
-
-        String("</script>");
-    return javascript;
-}
-
-String HTTPWebServer::javascriptAddActuatorControlButtonEventListeners() {
-
-    const String localIP = WiFi.localIP().toString();
-    const String javascript =
-        String("<script>") +
-
-            String("const grpPressButtons = [") +
-	            String("{\"id\": \"btnPull\", \"urlStart\": \"//") + localIP + String("/pullActuator\", \"urlEnd\": \"//") + localIP + String("/stopActuator\"},") +
-	            String("{\"id\": \"btnPush\", \"urlStart\": \"//") + localIP + String("/pushActuator\", \"urlEnd\": \"//") + localIP + String("/stopActuator\"},") +
-	            String("{\"id\": \"btnTurnOff\", \"urlStart\": \"//") + localIP + String("/stopActuator\", \"urlEnd\": \"//") + localIP + String("/stopActuator\"}") +
-            String("];") +
-
-       
-            String("const setUpEventHandler = (pressButton) => {") +
-	            String("let button = document.getElementById(pressButton.id);") +
-	            String("button.urlStart = pressButton.urlStart;") +
-	            String("button.urlEnd = pressButton.urlEnd;") +
-
-	            String("button.addEventListener(\"touchstart\", handleStart, {passive: false});") +
-	            String("button.addEventListener(\"touchend\", handleEnd, {passive: false});") +
-	            String("button.addEventListener(\"mousedown\", handleStart);") +
-	            String("button.addEventListener(\"mouseup\", handleEnd);") +
-            String("};") +
-
-            String("const handleStart = (e) => {") +
-                String("callAPIFromButton(e.currentTarget.urlStart, e.currentTarget.id, \"tdActuatorMovementResult\", false);") +
-	            String("e.stopPropagation();") +
-	            String("e.preventDefault();") +
-            String("};") +
-
-            String("const handleEnd = (e) => {") +
-	            String("callAPIFromButton(e.currentTarget.urlEnd, e.currentTarget.id, \"tdActuatorMovementResult\", true);") +
-	            String("e.stopPropagation();") +
-	            String("e.preventDefault();") +
-            String("};") +
- 
-            String("grpPressButtons.forEach( (pressButton, index, array) => {") +
-	            String("setUpEventHandler(pressButton);") +
-            String("});") +
-
-        String("</script>");
-    return javascript;
-}
-
 void HTTPWebServer::routeGetControls() {
 
     const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(CONTROLS_HTML) - 1;
@@ -239,164 +127,9 @@ String HTTPWebServer::baseMQTTHen_HouseHatchTopic() {
     return "<code>iot/hen_house/hatch/</code>";
 };
 
-void HTTPWebServer::routeGetInfo() {
-    const String localIP = WiFi.localIP().toString();
-    const String htmlBodyContent =
-
-        String("<h2>Software</h2>") +
-        String("<p>") +
-	        String("This software is intended for Arduino and compatible PLCs. The purpose is to use the PLC to enable control of a linear actuator (12 volt DC motor) via wifi / via pushbuttons, where the ultimate goal is to hoist up / down a guillotine - type door to open / close the entrance to a chicken house.") +
-        String("</p>") +
-
-        String("<table>") +
-	        String("<thead>") +
-		        String("<tr>") +
-			        String("<th colspan=2>This device</th>") +
-		        String("</tr>") +
-	        String("</thead>") +
-	        String("<tbody>") +
-		        String("<tr>") +
-                    String("<td>") + String("Firmware version")  + String("</td>") +
-                    String("<td>") + _tMG.firmwareVersion() + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("Serial monitor communication speed")  + String("</td>") +
-                    String("<td>") + _tMG.serialMonitorBaud() + String("</td>") +
-                String("</tr>") +
-	        String("</tbody>") +
-        String("</table>") +
-
-        String("<table>") +
-	        String("<thead>") +
-		        String("<tr>") +
-			        String("<th colspan=2>Wifi</th>") +
-		        String("</tr>") +
-	        String("</thead>") +
-	        String("<tbody>") +
-		        String("<tr>") +
-                    String("<td>") + String("MAC")  + String("</td>") +
-                    String("<td>") + WiFi.macAddress() + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("Assigned IP")  + String("</td>") +
-                    String("<td>") + WiFi.localIP().toString() + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("SSID")  + String("</td>") +
-                    String("<td>") + WiFi.SSID() + String("</td>") +
-                String("</tr>") +
-	        String("</tbody>") +
-        String("</table>") +
-        
-        String("<table>") +
-	        String("<thead>") +
-		        String("<tr>") +
-			        String("<th colspan=2>Control requests</th>") +
-		        String("</tr>") +
-		        String("<tr>") +
-			        String("<th>Action</th>") +
-                    String("<th>Request (<code>GET</code>)</th>") +
-		        String("</tr>") +
-	        String("</thead>") +
-	        String("<tbody>") +
-		        String("<tr>") +
-                    String("<td>") + String("Close hatch")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/closeHatch\">//") + localIP + String("/closeHatch</a>") + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("Open hatch")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/openHatch\">//") + localIP + String("/openHatch</a>") + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("Contracting actuator piston")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/pullActuator\">//") + localIP + String("/pullActuator</a>") + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("Stop actuator engine")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/stopActuator\">//") + localIP + String("/stopActuator</a>") + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("Extends actuator piston")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/pushActuator\">//") + localIP + String("/pushActuator</a>") + String("</td>") +
-                String("</tr>") +
-	        String("</tbody>") +
-        String("</table>") +
-        
-        String("<table>") +
-	        String("<thead>") +
-		        String("<tr>") +
-			        String("<th colspan=2>Other requests</th>") +
-		        String("</tr>") +
-		        String("<tr>") +
-			        String("<th>Action</th>") +
-                    String("<th>Request (<code>GET</code>)</th>") +
-		        String("</tr>") +
-	        String("</thead>") +
-	        String("<tbody>") +
-		        String("<tr>") +
-                    String("<td>") + String("Get current read measurement from LIDAR detector in a JSON:<br /><br /><pre>{\n\t\"distanceToObjectCm\":\"xxx\",\n\t\"strengthOrQualityOfReturnSignal\":\"yyy\",\n\t\"temperatureInternalOfLidarSensorChipCelsius\":\"zzz\"\n}</pre>")  + String("</td>") +
-                    String("<td>") + String("<a href=\"//") + localIP + String("/lidarSensorData\">//") + localIP + String("/lidarSensorData</a>") + String("</td>") +
-                String("</tr>") +
-	        String("</tbody>") +
-        String("</table>") +
-
-        String("<table>") +
-	        String("<thead>") +
-		        String("<tr>") +
-			        String("<th colspan=2>MQTT</th>") +
-		        String("</tr>") +
-	        String("</thead>") +
-	        String("<tbody>") +
-		        String("<tr>") +
-                    String("<td>") + String("Broker URL")  + String("</td>") +
-                    String("<td>") + _tMG.mqttBrokerURL() + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("Port")  + String("</td>") +
-                    String("<td>") + _tMG.mqttPort() + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("Username")  + String("</td>") +
-                    String("<td>") + _tMG.mqttUsername() + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + String("Password")  + String("</td>") +
-                    String("<td>") + _tMG.mqttPassword() + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td class=\"table-sub-head\" colspan=2>") + String("Published topics")  + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td class=\"table-sub-head\" colspan=2>") + String("Actuator")  + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + baseMQTTHen_HouseHatchTopic() + String("<code>actuator/action</code>") + String("</td>") +
-                    String("<td>") + String("Distance to target in centimeters/millimeters. Range: <code>0 - 1200</code>")  + String("</td>") +
-                String("</tr>") +
-
-
-
-
-		        String("<tr>") +
-                    String("<td class=\"table-sub-head\" colspan=2>") + String("Laser distance sensor meter value (LIDAR)")  + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + baseMQTTHen_HouseHatchTopic() + String("<code>lidar/distanceToObjectCm</code>") + String("</td>") +
-                    String("<td>") + String("Distance to target in centimeters/millimeters. Range: <code>0 - 1200</code>")  + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + baseMQTTHen_HouseHatchTopic() + String("<code>lidar/strengthOrQualityOfReturnSignal</code>") + String("</td>") +
-                    String("<td>") + String("Strength quality of returned signal in arbitrary units. Range: <code>-1, 0 - 32767</code>")  + String("</td>") +
-                String("</tr>") +
-		        String("<tr>") +
-                    String("<td>") + baseMQTTHen_HouseHatchTopic() + String("<code>lidar/temperatureInternalOfLidarSensorChipCelsius</code>") + String("</td>") +
-                    String("<td>") + String("Temperature of LIDAR sensor chip, range: <code>-25 &deg;C - 125 &deg;C</code>")  + String("</td>") +
-                String("</tr>") +
-	        String("</tbody>") +
-        String("</table>");
-
-    String html = htmlEnveloper("Device info - Chicken house hatch", htmlBodyContent);
-    _server.send(200, "text/html", html);
+void HTTPWebServer::routeGetInfo() {    
+    const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(INFO_HTML) - 1;
+    _server.send_P(200, "text/html", INFO_HTML, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
 }
 
 void HTTPWebServer::routeGetJavascriptAxiosJs() {
@@ -404,9 +137,26 @@ void HTTPWebServer::routeGetJavascriptAxiosJs() {
     _server.send_P(200, "text/javascript", AXIOS_JS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
 }
 
-void HTTPWebServer::routeGetJavascriptParametersJs() {
-    const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(JAVASCRIPT_PARAMETERS) - 1;
-    _server.send_P(200, "text/javascript", JAVASCRIPT_PARAMETERS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
+void HTTPWebServer::routeGetJavascriptParameters() {
+    const String javascriptParameters = 
+        String("const parameters = {") +
+            String("'mqtt' : {") +
+                String("'subscriptionTopics': {") +
+                    String("'lidarDistanceToObjectCm': 'iot/hen_house/hatch/lidar/distanceToObjectCm',") +
+                    String("'actuatorAction': 'iot/hen_house/hatch/actuator/action'") +
+                String("},") +
+                String("'hostname': '") + _mqttBrokerURL + ("',") +
+                String("'clientId': 'clie4ntId',") +
+                String("'connectionOptions': {") +
+                    String("'userName': '") + _mqttUsername + ("',") +
+                    String("'password': '") + _mqttPassword + ("',") +
+                    String("'keepAliveInterval': 30,") +
+                String("},") +
+                String("'port':") + String(_mqttPort) +
+            String("},") +
+        String("};");
+
+    _server.send_P(200, "text/javascript", javascriptParameters.c_str());
 }
 
 void HTTPWebServer::routeGetJavascriptPahoJs() {

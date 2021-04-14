@@ -37,7 +37,7 @@ Switch actuatorPushButton(PIN_D5_GPIO14_SCLK, true);
 
 TextMessageGenerator tMG(
     SETTINGS_DATA_FIRMWARE_VERSION, SETTINGS_DATA_SERIAL_MONITOR_BAUD,
-    SETTINGS_DATA_MQTT_BROKER_URL, SETTINGS_DATA_MQTT_PORT,
+    SETTINGS_DATA_MQTT_BROKER_URL, SETTINGS_DATA_MQTT_PORT_1883,
     SETTINGS_DATA_MQTT_USERNAME, SETTINGS_DATA_MQTT_PASSWORD);
 
 HatchRequest hatchRequests[2] = { HatchRequest("switch button requested"), HatchRequest("http requested") };
@@ -55,11 +55,11 @@ SwitchesManager switchesManager(hatchRequests[0], actuatorPullButton, actuatorPu
 
 WifiManager wifiManager( tMG, CREDENTIALS_JSON_STRING);
 
-HTTPWebServer webserver(hatchRequests[1], eSP8266WebServer, tMG, currentMeterData);
+HTTPWebServer webserver(hatchRequests[1], eSP8266WebServer, tMG, currentMeterData, SETTINGS_DATA_MQTT_BROKER_URL, SETTINGS_DATA_MQTT_PORT_FOR_PAHO_1884, SETTINGS_DATA_MQTT_USERNAME, SETTINGS_DATA_MQTT_PASSWORD);
 
 MQTTCommunicator mQTTC(
     pubSubClient, tMG,
-    SETTINGS_DATA_MQTT_BROKER_URL, SETTINGS_DATA_MQTT_PORT,
+    SETTINGS_DATA_MQTT_BROKER_URL, SETTINGS_DATA_MQTT_PORT_1883,
     SETTINGS_DATA_MQTT_USERNAME, SETTINGS_DATA_MQTT_PASSWORD);
 
 enum class ChickenHatchStates {

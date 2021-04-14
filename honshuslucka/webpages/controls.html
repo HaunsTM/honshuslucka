@@ -180,8 +180,8 @@
 // MQTT
         // called when the client connects
         const onConnect = () => {
-            client.subscribe(mqttParameters.subscriptionTopics.lidarDistanceToObjectCm);
-            client.subscribe(mqttParameters.subscriptionTopics.actuatorAction);
+            client.subscribe(parameters.mqtt.subscriptionTopics.lidarDistanceToObjectCm);
+            client.subscribe(parameters.mqtt.subscriptionTopics.actuatorAction);
         }
 
         // called when the client loses its connection
@@ -195,10 +195,10 @@
         const onMessageArrived = async (message) => {
             const topic = message.destinationName;
             switch (topic) {
-                case mqttParameters.subscriptionTopics.lidarDistanceToObjectCm:
+                case parameters.mqtt.subscriptionTopics.lidarDistanceToObjectCm:
                     document.getElementById('spanLidarDistanceToObjectCm').textContent = message.payloadString;                
                     break;
-                case mqttParameters.subscriptionTopics.actuatorAction:
+                case parameters.mqtt.subscriptionTopics.actuatorAction:
                     removeAllButtonsStatusClasses();
                     switch (message.payloadString) {
                         case 'PULL':
@@ -223,11 +223,11 @@
         }   
 
         // Create a client instance
-        client = new Paho.MQTT.Client(mqttParameters.hostname, Number(mqttParameters.port), '/', mqttParameters.clientId);
+        client = new Paho.MQTT.Client(parameters.mqtt.hostname, Number(parameters.mqtt.port), '/', parameters.mqtt.clientId);
 
-        mqttParameters.connectionOptions.onSuccess = onConnect;
+        parameters.mqtt.connectionOptions.onSuccess = onConnect;
         // connect the client
-        client.connect(mqttParameters.connectionOptions);
+        client.connect(parameters.mqtt.connectionOptions);
         
         // set callback handlers
         client.onConnectionLost = onConnectionLost;

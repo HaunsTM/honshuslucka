@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xml="http://www.w3.org/XML/1998/namespace" version="1.2" id="Layer_1" width="87.100006" y="0px" xml:space="preserve"  x="0px" height="72.698997" gorn="0" viewBox="0 0 87.100005 72.698997">
+    <desc >
+        <referenceFile >tfMiniPlus_schematic.svg</referenceFile>
+    </desc>
+    <metadata id="metadata3413" >
+        <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <cc:Work xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="">
+                <dc:format xmlns:dc="http://purl.org/dc/elements/1.1/">image/svg+xml</dc:format>
+                <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"/>
+                <dc:title xmlns:dc="http://purl.org/dc/elements/1.1/"/>
+            </cc:Work>
+        </rdf:RDF>
+    </metadata>
+    <defs id="defs3411" />
+    <rect id="rect3374" width="56.696999" y="15.200001"  height="42.299999" x="15.200001" fill="#ffffff" stroke-linecap="round" stroke="#000000" gorn="0.3" stroke-width="1"/>
+    <line id="connectorTX" y2="29.15" y1="29.15"  fill="none" x1="72.000008" stroke-linecap="round" stroke="#787878" gorn="0.4" x2="86.400009" stroke-width="0.75"/>
+    <text id="text3377" font-size="3.5" y="29.85" font-family="DroidSans"  x="63.272598" fill="#8c8c8c" gorn="0.5">TX</text>
+    <rect id="connector0pin" width="0.69999999" y="28.800001"  height="0.69999999" x="86.400009" fill="none" gorn="0.6"/>
+    <line id="connectorRX" y2="29.15" y1="29.15"  fill="none" x1="0.70000005" stroke-linecap="round" stroke="#787878" gorn="0.7" x2="15.1" stroke-width="0.75"/>
+    <rect width="1.883" y="28.800001"  height="1.05" x="0" fill="none" gorn="0.8"/>
+    <text id="text3382" font-size="3.5" y="29.85" font-family="DroidSans"  x="16.499201" fill="#8c8c8c" gorn="0.9">RX</text>
+    <rect id="connector1pin" width="0.69999999" y="28.800001"  height="0.69999999" x="0" fill="none" gorn="0.10"/>
+    <line id="connectorGND" y2="72" y1="57.599998"  fill="none" x1="43.549999" stroke-linecap="round" stroke="#787878" gorn="0.11" x2="43.549999" stroke-width="0.75"/>
+    <g  transform="translate(15.8369,20.0526)">
+        <g >
+            <g id="g3390"  gorn="0.12.0.0">
+                <g  transform="rotate(-90)">
+                    <g >
+                        <g id="g3388"  gorn="0.12.0.0.0.0.0">
+                            <g  transform="translate(-36.147,28.4123)">
+                                <g >
+                                    <text id="text3386" font-size="3.5" font-family="DroidSans"  fill="#8c8c8c" gorn="0.12.0.0.0.0.0.0.0.0">GND</text>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+    <rect id="connector3pin" width="0.69700003" y="72"  height="0.699" x="43.199997" fill="none" gorn="0.13"/>
+    <line id="connector5V" y2="15.1" y1="0.69999993"  fill="none" x1="43.549999" stroke-linecap="round" stroke="#787878" gorn="0.14" x2="43.549999" stroke-width="0.75"/>
+    <g  transform="translate(15.8369,6.04736)">
+        <g >
+            <g id="g3402"  gorn="0.15.0.0">
+                <g  transform="rotate(-90)">
+                    <g >
+                        <g id="g3400"  gorn="0.15.0.0.0.0.0">
+                            <g  transform="translate(-16.5214,28.4123)">
+                                <g >
+                                    <text id="text3394" font-size="3.5" font-family="DroidSans"  fill="#8c8c8c" gorn="0.15.0.0.0.0.0.0.0.0">5V</text>
+                                </g>
+                            </g>
+                            <g  transform="translate(-14.6034,28.4123)">
+                                <g >
+                                    <text id="text3396" font-size="3.5" font-family="DroidSans"  fill="#8c8c8c" gorn="0.15.0.0.0.0.0.1.0.0"/>
+                                </g>
+                            </g>
+                            <g  transform="translate(-12.5624,28.4123)">
+                                <g >
+                                    <text id="text3398" font-size="3.5" font-family="DroidSans"  fill="#8c8c8c" gorn="0.15.0.0.0.0.0.2.0.0"/>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+    <rect id="connector2pin" width="0.69700003" y="0"  height="0.69999999" x="43.199997" fill="none" gorn="0.16"/>
+    <text id="text3405" font-size="4.25" y="37.932335" font-family="DroidSans"  x="31.729225" gorn="0.17">TFMini Plus</text>
+</svg>
