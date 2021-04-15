@@ -73,10 +73,13 @@
     <script src="http://10.0.0.71/javascriptAxios_js">
     </script>
 
-    <script src="http://10.0.0.71/javascriptParameters_js">
+    <script src="http://10.0.0.71/javascriptKnockout_js">
     </script>
 
     <script src="http://10.0.0.71/javascriptPaho_js">
+    </script>
+
+    <script src="http://10.0.0.71/javascriptParameters_js">
     </script>
 
     <script>
@@ -180,8 +183,8 @@
 // MQTT
         // called when the client connects
         const onConnect = () => {
-            client.subscribe(parameters.mqtt.subscriptionTopics.lidarDistanceToObjectCm);
-            client.subscribe(parameters.mqtt.subscriptionTopics.actuatorAction);
+            client.subscribe(parameters.mqtt.publishTopics.lidarDistanceToObjectCm);
+            client.subscribe(parameters.mqtt.publishTopics.actuatorAction);
         }
 
         // called when the client loses its connection
@@ -195,10 +198,10 @@
         const onMessageArrived = async (message) => {
             const topic = message.destinationName;
             switch (topic) {
-                case parameters.mqtt.subscriptionTopics.lidarDistanceToObjectCm:
+                case parameters.mqtt.publishTopics.lidarDistanceToObjectCm:
                     document.getElementById('spanLidarDistanceToObjectCm').textContent = message.payloadString;                
                     break;
-                case parameters.mqtt.subscriptionTopics.actuatorAction:
+                case parameters.mqtt.publishTopics.actuatorAction:
                     removeAllButtonsStatusClasses();
                     switch (message.payloadString) {
                         case 'PULL':

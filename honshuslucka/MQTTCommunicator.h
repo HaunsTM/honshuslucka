@@ -15,14 +15,18 @@ private:
     String _mqttUsername;
     String _mqttPassword;
 
+    String _mqttPublishTopicActuatorAction;
+    String _mqttPublishTopicHatchLidarDistanceToObjectCm;
+    String _mqttPublishTopicHatchLidarStrengthOrQualityOfReturnSignal;
+    String _mqttPublishTopicHatchLidarTemperatureInternalOfLidarSensorChipCelsius;
+
     bool _initialized;
 
     PubSubClient& _pubSubClient;
     TextMessageGenerator& _tMG;
-    String baseReportHen_HouseHatchTopic();
 
 public:
-    MQTTCommunicator(PubSubClient& pubSubClient, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword);
+    MQTTCommunicator(PubSubClient& pubSubClient, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String _mqttPublishTopicActuatorAction, String _mqttPublishTopicHatchLidarDistanceToObjectCm, String _mqttPublishTopicHatchLidarStrengthOrQualityOfReturnSignal, String _mqttPublishTopicHatchLidarTemperatureInternalOfLidarSensorChipCelsius);
     
     ~MQTTCommunicator();
 

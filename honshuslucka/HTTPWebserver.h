@@ -23,15 +23,20 @@ private:
     int _mqttPort;
     String _mqttUsername;
     String _mqttPassword;
+
+    String _mqttPublishTopicActuatorAction;
+    String _mqttPublishTopicHatchLidarDistanceToObjectCm;
+    String _mqttPublishTopicHatchLidarStrengthOrQualityOfReturnSignal;
+    String _mqttPublishTopicHatchLidarTemperatureInternalOfLidarSensorChipCelsius;
     
     String baseMQTTHen_HouseHatchTopic();
-    String htmlEnveloper(String title, String bodyContent);
 
     void setUpRouteHandlers();
 
     void routeGetJavascriptAxiosJs();
-    void routeGetJavascriptParameters();
+    void routeGetJavascriptKnockoutJs();
     void routeGetJavascriptPahoJs();
+    void routeGetJavascriptParameters();
     
     void routeGetStyleSimpleCss();
 
@@ -48,7 +53,7 @@ private:
     
     void routeGetLidarSensorData();
 public:
-    HTTPWebServer(HatchRequest& hatchRequest, ESP8266WebServer& server, TextMessageGenerator& tMG, DistanceMeterData& currentMeterData, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword);
+    HTTPWebServer(HatchRequest& hatchRequest, ESP8266WebServer& server, TextMessageGenerator& tMG, DistanceMeterData& currentMeterData, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String _mqttPublishTopicActuatorAction, String _mqttPublishTopicHatchLidarDistanceToObjectCm, String _mqttPublishTopicHatchLidarStrengthOrQualityOfReturnSignal, String _mqttPublishTopicHatchLidarTemperatureInternalOfLidarSensorChipCelsius);
     
     ~HTTPWebServer();
 

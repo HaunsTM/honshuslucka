@@ -155,9 +155,6 @@ String TextMessageGenerator::hatchArrivedToItsDestination(String position) {
     return message;
 };
 
-
-
-
 String TextMessageGenerator::firmwareVersion() {
     return _firmwareVersion;
 };

@@ -5,7 +5,7 @@
 #include <PubSubClient.h>
 #include "TextMessageGenerator.h"
 
-MQTTCommunicator::MQTTCommunicator(PubSubClient& pubSubClient, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword)
+MQTTCommunicator::MQTTCommunicator(PubSubClient& pubSubClient, TextMessageGenerator& tMG, String mqttBrokerURL, int mqttPort, String mqttUsername, String mqttPassword, String mqttPublishTopicActuatorAction, String mqttPublishTopicHatchLidarDistanceToObjectCm, String mqttPublishTopicHatchLidarStrengthOrQualityOfReturnSignal, String mqttPublishTopicHatchLidarTemperatureInternalOfLidarSensorChipCelsius)
     :   
         _pubSubClient(pubSubClient),
         _tMG(tMG)
@@ -14,6 +14,11 @@ MQTTCommunicator::MQTTCommunicator(PubSubClient& pubSubClient, TextMessageGenera
     _mqttPort = mqttPort;
     _mqttUsername = mqttUsername;
     _mqttPassword = mqttPassword;
+
+    _mqttPublishTopicActuatorAction = mqttPublishTopicActuatorAction;
+    _mqttPublishTopicHatchLidarDistanceToObjectCm = mqttPublishTopicHatchLidarDistanceToObjectCm;
+    _mqttPublishTopicHatchLidarStrengthOrQualityOfReturnSignal = mqttPublishTopicHatchLidarStrengthOrQualityOfReturnSignal;
+    _mqttPublishTopicHatchLidarTemperatureInternalOfLidarSensorChipCelsius = mqttPublishTopicHatchLidarTemperatureInternalOfLidarSensorChipCelsius;
 
     _initialized = false;
 }
@@ -60,8 +65,6 @@ void MQTTCommunicator::connectToMQTTBroker() {
 
             Serial.print(_tMG.mQTTServerConnectionEstablished(WiFi.localIP().toString()).c_str());
 
-            // add subscriptions here
-            //_pubSubClient.subscribe("iot/hen_house/ .... ");
         }
         else {
             Serial.print(_tMG.mQTTServerConnectionFailed(_pubSubClient.state()).c_str());
@@ -70,26 +73,15 @@ void MQTTCommunicator::connectToMQTTBroker() {
 };
 
 /* Report functions */
-String MQTTCommunicator::baseReportHen_HouseHatchTopic() {
-    return "iot/hen_house/hatch/";
-};
 
 void MQTTCommunicator::reportHen_HouseHatchLidar(DistanceMeterData currentMeterData) {
-    String topicLidarDistanceToObjectCm =
-        baseReportHen_HouseHatchTopic() + "lidar/distanceToObjectCm";
-    String topicLidarStrengthOrQualityOfReturnSignal =
-        baseReportHen_HouseHatchTopic() + "lidar/strengthOrQualityOfReturnSignal";
-    String topicLidartemperatureInternalOfLidarSensorChipCelsius = 
-        baseReportHen_HouseHatchTopic() + "lidar/temperatureInternalOfLidarSensorChipCelsius";
-    
-    _pubSubClient.publish(topicLidarDistanceToObjectCm.c_str(), String(currentMeterData.distanceToObjectCm).c_str() );
-    _pubSubClient.publish(topicLidarStrengthOrQualityOfReturnSignal.c_str(), String(currentMeterData.strengthOrQualityOfReturnSignal).c_str() );
-    _pubSubClient.publish(topicLidartemperatureInternalOfLidarSensorChipCelsius.c_str(), String(currentMeterData.temperatureInternalOfLidarSensorChipCelsius).c_str() );
+
+    _pubSubClient.publish(_mqttPublishTopicHatchLidarDistanceToObjectCm.c_str(), String(currentMeterData.distanceToObjectCm).c_str() );
+    _pubSubClient.publish(_mqttPublishTopicHatchLidarStrengthOrQualityOfReturnSignal.c_str(), String(currentMeterData.strengthOrQualityOfReturnSignal).c_str() );
+    _pubSubClient.publish(_mqttPublishTopicHatchLidarTemperatureInternalOfLidarSensorChipCelsius.c_str(), String(currentMeterData.temperatureInternalOfLidarSensorChipCelsius).c_str() );
 };
 
 void MQTTCommunicator::reportHen_HouseHatchActuatorAction(ActuatorAction currentActuatorAction) {
-
-    String topicActuatorAction = baseReportHen_HouseHatchTopic() + "actuator/action";
 
     String messageActuatorAction;
 
@@ -105,5 +97,5 @@ void MQTTCommunicator::reportHen_HouseHatchActuatorAction(ActuatorAction current
             break;
     }
     
-    _pubSubClient.publish(topicActuatorAction.c_str(), messageActuatorAction.c_str() );
+    _pubSubClient.publish(_mqttPublishTopicActuatorAction.c_str(), messageActuatorAction.c_str() );
 };
