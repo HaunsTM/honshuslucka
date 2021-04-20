@@ -65,7 +65,6 @@ void SwitchesManager::monitorInteractions() {
         _hatchRequest.setAction(HatchRequestAction::STOP);
 
         if (_turnOffShouldHaveAcknowledgedReset && newButtonInteractionMayBePerformed()) {
-        Serial.println(".................................");
             _hatchRequest.setAcknowledged(false);
             _lastAcknowledgementChangedMs = millis();
 

@@ -71,7 +71,8 @@ const char CONTROLS_HTML[] PROGMEM = R"=====(
             </tr>
         </tbody>
     </table>
-    <nav class="navigation-links"><a href="//10.0.0.71/">Control</a>   |   <a href="//10.0.0.71/info">Device info</a></nav>
+
+    <nav class="navigation-links"><div><a href="//10.0.0.71/">Control</a></div><div>|</div><div><a href="//10.0.0.71/info">Device info</a></div></nav>
     <div class="info">
         <p>This software is distributed under <a href = "https://en.wikipedia.org/wiki/MIT_License">MIT License</a>. Source code on <a href="https://github.com/HaunsTM">Github - HaunsTM</a></p>
     </div>
@@ -79,10 +80,13 @@ const char CONTROLS_HTML[] PROGMEM = R"=====(
     <script src="http://10.0.0.71/javascriptAxios_js">
     </script>
 
-    <script src="http://10.0.0.71/javascriptParameters_js">
+    <script src="http://10.0.0.71/javascriptKnockout_js">
     </script>
 
     <script src="http://10.0.0.71/javascriptPaho_js">
+    </script>
+
+    <script src="http://10.0.0.71/javascriptParameters_js">
     </script>
 
     <script>
@@ -186,8 +190,8 @@ const char CONTROLS_HTML[] PROGMEM = R"=====(
 // MQTT
         // called when the client connects
         const onConnect = () => {
-            client.subscribe(mqttParameters.subscriptionTopics.lidarDistanceToObjectCm);
-            client.subscribe(mqttParameters.subscriptionTopics.actuatorAction);
+            client.subscribe(parameters.mqtt.publishTopics.lidarDistanceToObjectCm);
+            client.subscribe(parameters.mqtt.publishTopics.actuatorAction);
         }
 
         // called when the client loses its connection
@@ -201,10 +205,10 @@ const char CONTROLS_HTML[] PROGMEM = R"=====(
         const onMessageArrived = async (message) => {
             const topic = message.destinationName;
             switch (topic) {
-                case mqttParameters.subscriptionTopics.lidarDistanceToObjectCm:
+                case parameters.mqtt.publishTopics.lidarDistanceToObjectCm:
                     document.getElementById('spanLidarDistanceToObjectCm').textContent = message.payloadString;                
                     break;
-                case mqttParameters.subscriptionTopics.actuatorAction:
+                case parameters.mqtt.publishTopics.actuatorAction:
                     removeAllButtonsStatusClasses();
                     switch (message.payloadString) {
                         case 'PULL':
@@ -229,11 +233,11 @@ const char CONTROLS_HTML[] PROGMEM = R"=====(
         }   
 
         // Create a client instance
-        client = new Paho.MQTT.Client(mqttParameters.hostname, Number(mqttParameters.port), '/', mqttParameters.clientId);
+        client = new Paho.MQTT.Client(parameters.mqtt.hostname, Number(parameters.mqtt.port), '/', parameters.mqtt.clientId);
 
-        mqttParameters.connectionOptions.onSuccess = onConnect;
+        parameters.mqtt.connectionOptions.onSuccess = onConnect;
         // connect the client
-        client.connect(mqttParameters.connectionOptions);
+        client.connect(parameters.mqtt.connectionOptions);
         
         // set callback handlers
         client.onConnectionLost = onConnectionLost;

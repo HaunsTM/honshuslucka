@@ -50,6 +50,9 @@ const char SIMPLE_CSS[] PROGMEM = R"=====(
         display: flex;
         justify-content: flex-end;
     }
+    .navigation-links div{
+        padding: 0 1rem;
+    }
 )=====";
 
 #endif
