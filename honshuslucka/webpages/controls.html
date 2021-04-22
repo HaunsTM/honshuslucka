@@ -4,7 +4,7 @@
     <title>Controls - Chicken house hatch</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-    <link rel="stylesheet" href="http://10.0.0.71/styleSimple_css">
+    <link rel="stylesheet" href="/styleSimple_css">
 </head>
 <body>
     <h1 class="title">Controls - Chicken house hatch</h1>
@@ -66,22 +66,19 @@
         </tbody>
     </table>
 
-    <nav class="navigation-links"><div><a href="//10.0.0.71/">Control</a></div><div>|</div><div><a href="//10.0.0.71/info">Device info</a></div></nav>
+    <nav class="navigation-links"><div><a data-bind="attr: { href: computed.href.controls }">Controls </a></div><div>|</div><div><a data-bind="attr: { href: computed.href.info }">Device info</a></div></nav>
     <div class="info">
         <p>This software is distributed under <a href = "https://en.wikipedia.org/wiki/MIT_License">MIT License</a>. Source code on <a href="https://github.com/HaunsTM">Github - HaunsTM</a></p>
     </div>
-
-    <script src="http://10.0.0.71/javascriptAxios_js">
+    
+    <script src="/javascriptAxios_js">
     </script>
 
-    <script src="http://10.0.0.71/javascriptKnockout_js">
+    <script src="/javascriptPaho_js">
     </script>
 
-    <script src="http://10.0.0.71/javascriptPaho_js">
-    </script>
-
-    <script src="http://10.0.0.71/javascriptParameters_js">
-    </script>
+    <script src="/constJavascriptParameters_js">
+    </script>    
 
     <script>
 
@@ -93,8 +90,6 @@
             {'id': 'btnTurnOff', 'urlStart': 'stopActuator', 'urlEnd': 'stopActuator'}
         ];
         
-        const BASE_API_URL = 'http://10.0.0.71';
-
         const Timer = (ms) => {
             let id;
             const start = () => new Promise(
@@ -140,10 +135,11 @@
             }
         };
 
-        const callAPIFromButton = async (e, endpoint, timeoutResponseStatusColorOnButton) => {
+        const callAPIFromButton = async (e, endpointAction, timeoutResponseStatusColorOnButton) => {
 
             try {
-                const response = await axios.get(`${BASE_API_URL}/${endpoint}`);
+                const endpoint = `//${constJavascriptParameters.wifi.localIP}/${endpointAction}`;
+                const response = await axios.get(endpoint);
                 // setButtonClass(e.target.id, response.status, true);
                 return response;
             } catch (errors) {                
@@ -184,8 +180,8 @@
 // MQTT
         // called when the client connects
         const onConnect = () => {
-            client.subscribe(parameters.mqtt.publishTopics.lidarDistanceToObjectCm);
-            client.subscribe(parameters.mqtt.publishTopics.actuatorAction);
+            client.subscribe(constJavascriptParameters.mqtt.publishTopics.lidarDistanceToObjectCm);
+            client.subscribe(constJavascriptParameters.mqtt.publishTopics.actuatorAction);
         }
 
         // called when the client loses its connection
@@ -199,10 +195,10 @@
         const onMessageArrived = async (message) => {
             const topic = message.destinationName;
             switch (topic) {
-                case parameters.mqtt.publishTopics.lidarDistanceToObjectCm:
+                case constJavascriptParameters.mqtt.publishTopics.lidarDistanceToObjectCm:
                     document.getElementById('spanLidarDistanceToObjectCm').textContent = message.payloadString;                
                     break;
-                case parameters.mqtt.publishTopics.actuatorAction:
+                case constJavascriptParameters.mqtt.publishTopics.actuatorAction:
                     removeAllButtonsStatusClasses();
                     switch (message.payloadString) {
                         case 'PULL':
@@ -227,11 +223,11 @@
         }   
 
         // Create a client instance
-        client = new Paho.MQTT.Client(parameters.mqtt.hostname, Number(parameters.mqtt.port), '/', parameters.mqtt.clientId);
+        client = new Paho.MQTT.Client(constJavascriptParameters.mqtt.hostname, Number(constJavascriptParameters.mqtt.port), '/', constJavascriptParameters.mqtt.clientId);
 
-        parameters.mqtt.connectionOptions.onSuccess = onConnect;
+        constJavascriptParameters.mqtt.connectionOptions.onSuccess = onConnect;
         // connect the client
-        client.connect(parameters.mqtt.connectionOptions);
+        client.connect(constJavascriptParameters.mqtt.connectionOptions);
         
         // set callback handlers
         client.onConnectionLost = onConnectionLost;

@@ -177,7 +177,7 @@
     <script src="/javascriptKnockout_js">
     </script>
 
-    <script src="/javascriptParameters_js">
+    <script src="/constJavascriptParameters_js">
     </script>
 
     <script>
@@ -185,30 +185,30 @@
             const _self = this;
             
             _self.device = {
-                firmwareVersion: ko.observable(parameters.device.firmwareVersion),
-                macAddress: ko.observable(parameters.device.macAddress),
-                serialMonitorBaud: ko.observable(parameters.device.serialMonitorBaud),
+                firmwareVersion: ko.observable(constJavascriptParameters.device.firmwareVersion),
+                macAddress: ko.observable(constJavascriptParameters.device.macAddress),
+                serialMonitorBaud: ko.observable(constJavascriptParameters.device.serialMonitorBaud),
             };
             _self.mqtt = {
                 publishTopics: {
-                    actuatorAction: ko.observable(parameters.mqtt.publishTopics.actuatorAction),
-                    lidarDistanceToObjectCm: ko.observable(parameters.mqtt.publishTopics.lidarDistanceToObjectCm),
-                    lidarStrengthOrQualityOfReturnSignal: ko.observable(parameters.mqtt.publishTopics.lidarStrengthOrQualityOfReturnSignal),
-                    lidarTemperatureInternalOfLidarSensorChipCelsius: ko.observable(parameters.mqtt.publishTopics.lidarTemperatureInternalOfLidarSensorChipCelsius),
+                    actuatorAction: ko.observable(constJavascriptParameters.mqtt.publishTopics.actuatorAction),
+                    lidarDistanceToObjectCm: ko.observable(constJavascriptParameters.mqtt.publishTopics.lidarDistanceToObjectCm),
+                    lidarStrengthOrQualityOfReturnSignal: ko.observable(constJavascriptParameters.mqtt.publishTopics.lidarStrengthOrQualityOfReturnSignal),
+                    lidarTemperatureInternalOfLidarSensorChipCelsius: ko.observable(constJavascriptParameters.mqtt.publishTopics.lidarTemperatureInternalOfLidarSensorChipCelsius),
                 },
-                hostname: ko.observable(parameters.mqtt.hostname),
-                clientId: ko.observable(parameters.mqtt.clientId),
+                hostname: ko.observable(constJavascriptParameters.mqtt.hostname),
+                clientId: ko.observable(constJavascriptParameters.mqtt.clientId),
                 connectionOptions: {
-                    userName: ko.observable(parameters.mqtt.connectionOptions.userName),
-                    password: ko.observable(parameters.mqtt.connectionOptions.password),
-                    keepAliveInterval: ko.observable(parameters.mqtt.connectionOptions.keepAliveInterval),
+                    userName: ko.observable(constJavascriptParameters.mqtt.connectionOptions.userName),
+                    password: ko.observable(constJavascriptParameters.mqtt.connectionOptions.password),
+                    keepAliveInterval: ko.observable(constJavascriptParameters.mqtt.connectionOptions.keepAliveInterval),
                 },
-                port: ko.observable(parameters.mqtt.port)
+                port: ko.observable(constJavascriptParameters.mqtt.port)
             };
             _self.wifi = {
-                channel: ko.observable(parameters.wifi.channel),
-                localIP: ko.observable(parameters.wifi.localIP),
-                SSID: ko.observable(parameters.wifi.SSID),
+                channel: ko.observable(constJavascriptParameters.wifi.channel),
+                localIP: ko.observable(constJavascriptParameters.wifi.localIP),
+                SSID: ko.observable(constJavascriptParameters.wifi.SSID),
             };
             _self.computed = (function () {                
                 return {

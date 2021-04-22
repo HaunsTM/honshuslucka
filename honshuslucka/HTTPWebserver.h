@@ -36,7 +36,7 @@ private:
     void routeGetJavascriptAxiosJs();
     void routeGetJavascriptKnockoutJs();
     void routeGetJavascriptPahoJs();
-    void routeGetJavascriptParameters();
+    void routeGetConstJavascriptParameters();
     
     void routeGetStyleSimpleCss();
 

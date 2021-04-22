@@ -6,7 +6,7 @@
 #include "webpages/axios_js.h"
 #include "webpages/controls_html.h"
 #include "webpages/info_html.h"
-#include "webpages/javascriptParameters_js.h"
+//#include "webpages/javascriptParameters_js.h"
 #include "webpages/knockout_js.h"
 #include "webpages/paho_js.h"
 #include "webpages/simple_css.h"
@@ -66,7 +66,7 @@ void HTTPWebServer::setUpRouteHandlers() {
     _server.on("/javascriptAxios_js", [this]() { routeGetJavascriptAxiosJs(); });
     _server.on("/javascriptKnockout_js", [this]() { routeGetJavascriptKnockoutJs(); });
     _server.on("/javascriptPaho_js", [this]() { routeGetJavascriptPahoJs(); });
-    _server.on("/javascriptParameters_js", [this]() { routeGetJavascriptParameters(); });
+    _server.on("/constJavascriptParameters_js", [this]() { routeGetConstJavascriptParameters(); });
 
     _server.on("/styleSimple_css", [this]() { routeGetStyleSimpleCss(); });
 
@@ -114,13 +114,13 @@ void HTTPWebServer::routeGetJavascriptPahoJs() {
     _server.send_P(200, "text/javascript", PAHO_JS, SIZE_WITHOUT_TERMINATING_NULL_CHARACTER);
 }
 
-void HTTPWebServer::routeGetJavascriptParameters() {
+void HTTPWebServer::routeGetConstJavascriptParameters() {
     
     char wifiChannel[6];
     itoa(WiFi.channel(), wifiChannel, 10);
 
-    const String javascriptParameters = 
-        String("const parameters = {") +
+    const String constJavascriptParameters = 
+        String("const constJavascriptParameters = {") +
             String("'device' : {") +
                     String("'firmwareVersion': '") + _tMG.firmwareVersion() + ("',") +
                     String("'macAddress': '") + WiFi.macAddress() + ("',") +
@@ -150,7 +150,7 @@ void HTTPWebServer::routeGetJavascriptParameters() {
                     String("'SSID': '") + WiFi.SSID() + ("',") +
             String("}") +
         String("};");
-    _server.send_P(200, "text/javascript", javascriptParameters.c_str());
+    _server.send_P(200, "text/javascript", constJavascriptParameters.c_str());
 }
 
 

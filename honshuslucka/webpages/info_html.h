@@ -4,13 +4,13 @@
 
 
 const char INFO_HTML[] PROGMEM = R"=====(
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Device info - Chicken house hatch</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-    <link rel="stylesheet" href="http://10.0.0.71/styleSimple_css">
+    <link rel="stylesheet" href="/styleSimple_css">
 </head>
 <body>
     <h1 class="title">Device info - Chicken house hatch</h1>
@@ -73,23 +73,23 @@ const char INFO_HTML[] PROGMEM = R"=====(
         </thead>
         <tbody>
             <tr>
-                <td><a href="//10.0.0.71/closeHatch">//10.0.0.71/closeHatch</a></td>
+                <td><a data-bind="attr: { href: computed.href.closeHatch }"><span data-bind="text: computed.href.closeHatch"></span></td>
                 <td>Close hatch</td>
             </tr>
             <tr>
-                <td><a href="//10.0.0.71/openHatch">//10.0.0.71/openHatch</a></td>
+                <td><a data-bind="attr: { href: computed.href.openHatch }"><span data-bind="text: computed.href.openHatch"></td>
                 <td>Open hatch</td>
             </tr>
             <tr>
-                <td><a href="//10.0.0.71/pullActuator">//10.0.0.71/pullActuator</a></td>
+                <td><a data-bind="attr: { href: computed.href.pullActuator }"><span data-bind="text: computed.href.pullActuator"></td>
                 <td>Contracting actuator piston</td>
             </tr>
             <tr>
-                <td><a href="//10.0.0.71/stopActuator">//10.0.0.71/stopActuator</a></td>
+                <td><a data-bind="attr: { href: computed.href.stopActuator }"><span data-bind="text: computed.href.stopActuator"></td>
                 <td>Stop actuator engine</td>
             </tr>
             <tr>
-                <td><a href="//10.0.0.71/pushActuator">//10.0.0.71/pushActuator</a></td>
+                <td><a data-bind="attr: { href: computed.href.pushActuator }"><span data-bind="text: computed.href.pushActuator"></td>
                 <td>Extends actuator piston</td>
             </tr>
         </tbody>
@@ -105,7 +105,8 @@ const char INFO_HTML[] PROGMEM = R"=====(
         <tbody>
             <tr>
                 <td>
-                    <a href="//10.0.0.71/lidarSensorData">//10.0.0.71/lidarSensorData</a><br />
+                    <a data-bind="attr: { href: computed.href.lidarSensorData }"><span data-bind="text: computed.href.lidarSensorData"></a>
+                        <br /><br />
                     Get current read measurement from LIDAR detector in a JSON:<br />
                 </td>
                 <td>
@@ -179,10 +180,10 @@ const char INFO_HTML[] PROGMEM = R"=====(
         <p>This software is distributed under <a href = "https://en.wikipedia.org/wiki/MIT_License">MIT License</a>. Source code on <a href="https://github.com/HaunsTM">Github - HaunsTM</a></p>
     </div>
     
-    <script src="http://10.0.0.71/javascriptKnockout_js">
+    <script src="/javascriptKnockout_js">
     </script>
 
-    <script src="http://10.0.0.71/javascriptParameters_js">
+    <script src="/constJavascriptParameters_js">
     </script>
 
     <script>
@@ -190,34 +191,35 @@ const char INFO_HTML[] PROGMEM = R"=====(
             const _self = this;
             
             _self.device = {
-                firmwareVersion: ko.observable(parameters.device.firmwareVersion),
-                macAddress: ko.observable(parameters.device.macAddress),
-                serialMonitorBaud: ko.observable(parameters.device.serialMonitorBaud),
+                firmwareVersion: ko.observable(constJavascriptParameters.device.firmwareVersion),
+                macAddress: ko.observable(constJavascriptParameters.device.macAddress),
+                serialMonitorBaud: ko.observable(constJavascriptParameters.device.serialMonitorBaud),
             };
             _self.mqtt = {
                 publishTopics: {
-                    actuatorAction: ko.observable(parameters.mqtt.publishTopics.actuatorAction),
-                    lidarDistanceToObjectCm: ko.observable(parameters.mqtt.publishTopics.lidarDistanceToObjectCm),
-                    lidarStrengthOrQualityOfReturnSignal: ko.observable(parameters.mqtt.publishTopics.lidarStrengthOrQualityOfReturnSignal),
-                    lidarTemperatureInternalOfLidarSensorChipCelsius: ko.observable(parameters.mqtt.publishTopics.lidarTemperatureInternalOfLidarSensorChipCelsius),
+                    actuatorAction: ko.observable(constJavascriptParameters.mqtt.publishTopics.actuatorAction),
+                    lidarDistanceToObjectCm: ko.observable(constJavascriptParameters.mqtt.publishTopics.lidarDistanceToObjectCm),
+                    lidarStrengthOrQualityOfReturnSignal: ko.observable(constJavascriptParameters.mqtt.publishTopics.lidarStrengthOrQualityOfReturnSignal),
+                    lidarTemperatureInternalOfLidarSensorChipCelsius: ko.observable(constJavascriptParameters.mqtt.publishTopics.lidarTemperatureInternalOfLidarSensorChipCelsius),
                 },
-                hostname: ko.observable(parameters.mqtt.hostname),
-                clientId: ko.observable(parameters.mqtt.clientId),
+                hostname: ko.observable(constJavascriptParameters.mqtt.hostname),
+                clientId: ko.observable(constJavascriptParameters.mqtt.clientId),
                 connectionOptions: {
-                    userName: ko.observable(parameters.mqtt.connectionOptions.userName),
-                    password: ko.observable(parameters.mqtt.connectionOptions.password),
-                    keepAliveInterval: ko.observable(parameters.mqtt.connectionOptions.keepAliveInterval),
+                    userName: ko.observable(constJavascriptParameters.mqtt.connectionOptions.userName),
+                    password: ko.observable(constJavascriptParameters.mqtt.connectionOptions.password),
+                    keepAliveInterval: ko.observable(constJavascriptParameters.mqtt.connectionOptions.keepAliveInterval),
                 },
-                port: ko.observable(parameters.mqtt.port)
+                port: ko.observable(constJavascriptParameters.mqtt.port)
             };
             _self.wifi = {
-                channel: ko.observable(parameters.wifi.channel),
-                localIP: ko.observable(parameters.wifi.localIP),
-                SSID: ko.observable(parameters.wifi.SSID),
+                channel: ko.observable(constJavascriptParameters.wifi.channel),
+                localIP: ko.observable(constJavascriptParameters.wifi.localIP),
+                SSID: ko.observable(constJavascriptParameters.wifi.SSID),
             };
             _self.computed = (function () {                
                 return {
                     href: {
+                        base: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/" ; }),
                         closeHatch: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/closeHatch" ; }),
                         controls: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/" ; }),
                         info: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/info" }),
