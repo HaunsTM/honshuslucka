@@ -83,8 +83,59 @@ const char CONTROLS_HTML[] PROGMEM = R"=====(<!DOCTYPE html>
     </script>
 
     <script src="/constJavascriptParameters_js">
-    </script>    
+    </script>
+    
+    <script src="/javascriptKnockout_js">
+    </script>
 
+    <script>
+        function viewModelKnockout() {
+            const _self = this;
+            
+            _self.device = {
+                firmwareVersion: ko.observable(constJavascriptParameters.device.firmwareVersion),
+                macAddress: ko.observable(constJavascriptParameters.device.macAddress),
+                serialMonitorBaud: ko.observable(constJavascriptParameters.device.serialMonitorBaud),
+            };
+            _self.mqtt = {
+                publishTopics: {
+                    actuatorAction: ko.observable(constJavascriptParameters.mqtt.publishTopics.actuatorAction),
+                    lidarDistanceToObjectCm: ko.observable(constJavascriptParameters.mqtt.publishTopics.lidarDistanceToObjectCm),
+                    lidarStrengthOrQualityOfReturnSignal: ko.observable(constJavascriptParameters.mqtt.publishTopics.lidarStrengthOrQualityOfReturnSignal),
+                    lidarTemperatureInternalOfLidarSensorChipCelsius: ko.observable(constJavascriptParameters.mqtt.publishTopics.lidarTemperatureInternalOfLidarSensorChipCelsius),
+                },
+                hostname: ko.observable(constJavascriptParameters.mqtt.hostname),
+                clientId: ko.observable(constJavascriptParameters.mqtt.clientId),
+                connectionOptions: {
+                    userName: ko.observable(constJavascriptParameters.mqtt.connectionOptions.userName),
+                    password: ko.observable(constJavascriptParameters.mqtt.connectionOptions.password),
+                    keepAliveInterval: ko.observable(constJavascriptParameters.mqtt.connectionOptions.keepAliveInterval),
+                },
+                port: ko.observable(constJavascriptParameters.mqtt.port)
+            };
+            _self.wifi = {
+                channel: ko.observable(constJavascriptParameters.wifi.channel),
+                localIP: ko.observable(constJavascriptParameters.wifi.localIP),
+                SSID: ko.observable(constJavascriptParameters.wifi.SSID),
+            };
+            _self.computed = (function () {                
+                return {
+                    href: {
+                        base: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/" ; }),
+                        closeHatch: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/closeHatch" ; }),
+                        controls: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/" ; }),
+                        info: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/info" }),
+                        lidarSensorData: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/lidarSensorData" }),
+                        pullActuator: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/pullActuator" }),
+                        pushActuator: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/pushActuator" }),
+                        stopActuator: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/stopActuator" }),
+                    }
+                }
+            })();
+            return _self;
+        };
+        ko.applyBindings(viewModelKnockout);
+    </script>
     <script>
 
         const grpPressButtons = [
@@ -145,10 +196,8 @@ const char CONTROLS_HTML[] PROGMEM = R"=====(<!DOCTYPE html>
             try {
                 const endpoint = `//${constJavascriptParameters.wifi.localIP}/${endpointAction}`;
                 const response = await axios.get(endpoint);
-                // setButtonClass(e.target.id, response.status, true);
                 return response;
-            } catch (errors) {                
-                // setButtonClass(e.target.id, false, true);
+            } catch (errors) {
                 console.error(errors);
             }
         };
