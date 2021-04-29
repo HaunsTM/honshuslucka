@@ -3,7 +3,8 @@
 #define CONTROLS_HTML_H
 
 
-const char CONTROLS_HTML[] PROGMEM = R"=====(<!DOCTYPE html>
+const char CONTROLS_HTML[] PROGMEM = R"=====(
+    <!DOCTYPE html>
 <html>
 <head>
     <title>Controls - Chicken house hatch</title>
@@ -126,6 +127,7 @@ const char CONTROLS_HTML[] PROGMEM = R"=====(<!DOCTYPE html>
                         controls: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/" ; }),
                         info: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/info" }),
                         lidarSensorData: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/lidarSensorData" }),
+                        openHatch: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/openHatch" ; }),
                         pullActuator: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/pullActuator" }),
                         pushActuator: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/pushActuator" }),
                         stopActuator: ko.pureComputed( () => { return "//" + _self.wifi.localIP() + "/stopActuator" }),
@@ -139,8 +141,8 @@ const char CONTROLS_HTML[] PROGMEM = R"=====(<!DOCTYPE html>
     <script>
 
         const grpPressButtons = [
-            {'id': 'btnOpenHatch', 'urlStart': 'pullActuator'},
-            {'id': 'btnCloseHatch', 'urlStart': 'pullActuator'},
+            {'id': 'btnOpenHatch', 'urlStart': 'openHatch'},
+            {'id': 'btnCloseHatch', 'urlStart': 'closeHatch'},
             {'id': 'btnPull', 'urlStart': 'pullActuator', 'urlEnd': 'stopActuator'},
             {'id': 'btnPush', 'urlStart': 'pushActuator', 'urlEnd': 'stopActuator'},
             {'id': 'btnTurnOff', 'urlStart': 'stopActuator', 'urlEnd': 'stopActuator'}
@@ -207,12 +209,14 @@ const char CONTROLS_HTML[] PROGMEM = R"=====(<!DOCTYPE html>
             let button = document.getElementById(pressButton.id);
 
             button.urlStart = pressButton.urlStart;
-            button.urlEnd = pressButton.urlEnd;
-
             button.addEventListener('touchstart', handleButtonPress, {passive: false});
-            button.addEventListener('touchend', handleButtonRelease, {passive: false});
             button.addEventListener('mousedown', handleButtonPress);
-            button.addEventListener('mouseup', handleButtonRelease);
+
+            if (pressButton.urlEnd) {
+                button.urlEnd = pressButton.urlEnd;
+                button.addEventListener('touchend', handleButtonRelease, {passive: false});
+                button.addEventListener('mouseup', handleButtonRelease);
+            }
         };
 
         const handleButtonPress = (e) => {

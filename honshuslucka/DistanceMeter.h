@@ -12,6 +12,7 @@ public:
     DistanceMeter(SoftwareSerial& customSerialForTFMini, DistanceMeterData& currentMeterData);
 
     void initialize();
+    bool isConnected();
     void handleDistanceMeter();
 
 private:
@@ -21,6 +22,7 @@ private:
     TFMPlus _tfmP;
 
     bool _initialized;
+    bool _isConnected;
     unsigned long _lastReadMs;    
 };
 

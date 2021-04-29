@@ -8,6 +8,7 @@ DistanceMeter::DistanceMeter(SoftwareSerial& customSerialForTFMini, DistanceMete
         _currentMeterData(currentMeterData)
 {
     _initialized = false;
+    _isConnected = false;
 }
 
 void DistanceMeter::initialize() {
@@ -21,12 +22,17 @@ void DistanceMeter::initialize() {
                                             // pass device serial port to the object.
 
         delay(500);  // added to allow the System Rest enough time to complete
-        _tfmP.sendCommand(SET_FRAME_RATE, FRAME_20);
+        _isConnected = _tfmP.sendCommand(SET_FRAME_RATE, FRAME_20);
         
 
         _initialized = true;
     }
 }
+
+bool DistanceMeter::isConnected() {
+    return _isConnected;
+}
+
 
 void DistanceMeter::handleDistanceMeter() {
     

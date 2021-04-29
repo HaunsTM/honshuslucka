@@ -330,7 +330,9 @@ void loop() {
 
     blinker.handleBlinker();
 
-    previousMeterData = currentMeterData;
-    distanceMeter.handleDistanceMeter();
-    reportMoving();
+    if (distanceMeter.isConnected()) {
+        previousMeterData = currentMeterData;
+        distanceMeter.handleDistanceMeter();
+        reportMoving();
+    }
 }

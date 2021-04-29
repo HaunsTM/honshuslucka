@@ -6,7 +6,6 @@
 #include "webpages/axios_js.h"
 #include "webpages/controls_html.h"
 #include "webpages/info_html.h"
-//#include "webpages/javascriptParameters_js.h"
 #include "webpages/knockout_js.h"
 #include "webpages/paho_js.h"
 #include "webpages/simple_css.h"
