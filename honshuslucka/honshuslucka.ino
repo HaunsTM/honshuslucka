@@ -203,8 +203,10 @@ ActuatorAction hatchAction2ActuatorAction(HatchRequestAction hatchAction) {
             actuatorAction = ACTUATOR_PULL_WILL_OPEN_HATCH ? ActuatorAction::PUSH : ActuatorAction::PULL;
             break;
         case HatchRequestAction::CLOSE_HATCH:
+            actuatorAction = ACTUATOR_PULL_WILL_OPEN_HATCH ? ActuatorAction::PUSH : ActuatorAction::PULL;
             break;
         case HatchRequestAction::OPEN_HATCH:
+            actuatorAction = ACTUATOR_PULL_WILL_OPEN_HATCH ? ActuatorAction::PULL : ActuatorAction::PUSH;
             break;
     }
     return actuatorAction;

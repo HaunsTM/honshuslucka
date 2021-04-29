@@ -51,12 +51,18 @@ void MQTTCommunicator::mqttReceived(char* topic, byte* payload, unsigned int len
     Serial.print(_tMG.messageArrived(topic, payload, length).c_str());
 }
 
+String MQTTCommunicator::randomMQTTClientId() {
+    String randomMQTTClientId = "Chicken House Hatch - MQTTCommunicator MQTT clientId: ";
+    randomMQTTClientId += String(random(0xffff), HEX);
+
+    return randomMQTTClientId;
+};
+
 void MQTTCommunicator::connectToMQTTBroker() {
     // make sure we are not connected already
     if (!_pubSubClient.connected()) {
         // Create a random client ID
-        String clientId = "ESP8266 Client - ";
-        clientId += String(random(0xffff), HEX);
+        String clientId = randomMQTTClientId();
 
         Serial.print(_tMG.connectingToMQTTServer(clientId.c_str()).c_str());
 

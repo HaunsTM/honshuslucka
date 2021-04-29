@@ -57,6 +57,13 @@ void HTTPWebServer::initialize() {
     }
 }
 
+String HTTPWebServer::randomMQTTClientId() {
+    String randomMQTTClientId = "Chicken House Hatch - HTTPWebserver MQTT clientId: ";
+    randomMQTTClientId += String(random(0xffff), HEX);
+
+    return randomMQTTClientId;
+};
+
 void HTTPWebServer::setUpRouteHandlers() {
 
     _server.on("/", [this]() { routeGetControls(); });
@@ -92,7 +99,7 @@ void HTTPWebServer::routeGetControls() {
 
 String HTTPWebServer::baseMQTTHen_HouseHatchTopic() {
     return "<code>iot/hen_house/hatch/</code>";
-};
+}
 
 void HTTPWebServer::routeGetInfo() {    
     const unsigned long SIZE_WITHOUT_TERMINATING_NULL_CHARACTER = sizeof(INFO_HTML) - 1;
@@ -122,32 +129,32 @@ void HTTPWebServer::routeGetConstJavascriptParameters() {
     const String constJavascriptParameters = 
         String("const constJavascriptParameters = {") +
             String("'device' : {") +
-                    String("'firmwareVersion': '") + _tMG.firmwareVersion() + ("',") +
-                    String("'macAddress': '") + WiFi.macAddress() + ("',") +
-                    String("'serialMonitorBaud': '") + _tMG.serialMonitorBaud() + ("',") +
+                    String("'firmwareVersion': '") + _tMG.firmwareVersion() + String("',") +
+                    String("'macAddress': '") + WiFi.macAddress() + String("',") +
+                    String("'serialMonitorBaud': '") + _tMG.serialMonitorBaud() + String("',") +
             String("},") +
 
             String("'mqtt' : {") +
                 String("'publishTopics': {") +
-                    String("'actuatorAction': '") + _mqttPublishTopicActuatorAction + ("',") +
-                    String("'lidarDistanceToObjectCm': '") + _mqttPublishTopicHatchLidarDistanceToObjectCm + ("',") +
-                    String("'lidarStrengthOrQualityOfReturnSignal': '") + _mqttPublishTopicHatchLidarStrengthOrQualityOfReturnSignal + ("',") +
-                    String("'lidarTemperatureInternalOfLidarSensorChipCelsius': '") + _mqttPublishTopicHatchLidarTemperatureInternalOfLidarSensorChipCelsius + ("',") +
+                    String("'actuatorAction': '") + _mqttPublishTopicActuatorAction + String("',") +
+                    String("'lidarDistanceToObjectCm': '") + _mqttPublishTopicHatchLidarDistanceToObjectCm + String("',") +
+                    String("'lidarStrengthOrQualityOfReturnSignal': '") + _mqttPublishTopicHatchLidarStrengthOrQualityOfReturnSignal + String("',") +
+                    String("'lidarTemperatureInternalOfLidarSensorChipCelsius': '") + _mqttPublishTopicHatchLidarTemperatureInternalOfLidarSensorChipCelsius + String("',") +
                 String("},") +
-                String("'hostname': '") + _mqttBrokerURL + ("',") +
-                String("'clientId': 'clie4ntId',") +
+                String("'hostname': '") + _mqttBrokerURL + String("',") +
+                String("'clientId': '") + randomMQTTClientId() + String("',") +
                 String("'connectionOptions': {") +
-                    String("'userName': '") + _mqttUsername + ("',") +
-                    String("'password': '") + _mqttPassword + ("',") +
+                    String("'userName': '") + _mqttUsername + String("',") +
+                    String("'password': '") + _mqttPassword + String("',") +
                     String("'keepAliveInterval': 60,") +
                 String("},") +
                 String("'port':") + String(_mqttPort) +
             String("},") +
             
             String("'wifi' : {") +
-                    String("'channel': '") + wifiChannel + ("',") +
-                    String("'localIP': '") + WiFi.localIP().toString() + ("',") +
-                    String("'SSID': '") + WiFi.SSID() + ("',") +
+                    String("'channel': '") + wifiChannel + String("',") +
+                    String("'localIP': '") + WiFi.localIP().toString() + String("',") +
+                    String("'SSID': '") + WiFi.SSID() + String("',") +
             String("}") +
         String("};");
     _server.send_P(200, "text/javascript", constJavascriptParameters.c_str());

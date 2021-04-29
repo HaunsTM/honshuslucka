@@ -31,6 +31,7 @@ private:
     
     String baseMQTTHen_HouseHatchTopic();
 
+    String randomMQTTClientId();
     void setUpRouteHandlers();
 
     void routeGetJavascriptAxiosJs();
