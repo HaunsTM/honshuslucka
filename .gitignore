@@ -7,3 +7,4 @@ Debug
 *.editorconfig
 /honshuslucka/SettingsData.h
 .vscode
+/SettingsData.h
